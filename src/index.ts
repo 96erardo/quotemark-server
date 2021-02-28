@@ -1,24 +1,20 @@
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
-import { buildSchema } from 'graphql';
- 
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
- 
+import schema from './modules/schema';
+import knex from './shared/configuration/knex';
+
 const root = {
   hello: () => {
     return 'Hello world!';
   },
 };
  
-var app = express();
+const app = express();
 
 app.use('/graphql', graphqlHTTP({
   schema: schema,
   rootValue: root,
+  context: { knex },
   graphiql: true,
 }));
 
