@@ -3,17 +3,10 @@ import { graphqlHTTP } from 'express-graphql';
 import schema from './modules/schema';
 import knex from './shared/configuration/knex';
 
-const root = {
-  hello: () => {
-    return 'Hello world!';
-  },
-};
- 
 const app = express();
 
 app.use('/graphql', graphqlHTTP({
   schema: schema,
-  rootValue: root,
   context: { knex },
   graphiql: true,
 }));

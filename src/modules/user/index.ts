@@ -1,8 +1,7 @@
 import { GraphQLFieldConfig, GraphQLID, GraphQLObjectType, GraphQLString } from 'graphql';
-import { Context, List } from '../../shared/types';
-import {
-  UserCreateInput
-} from './inputs';
+import { Context, List, GraphQLDateTime, GraphQLDate } from '../../shared/types';
+import { UserCreateInput } from './inputs';
+import { v4 as uuid } from 'uuid';
 
 export const User = new GraphQLObjectType({
   name: 'User',
@@ -11,9 +10,10 @@ export const User = new GraphQLObjectType({
     firstName: { type: GraphQLString },
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
-    createdAt: { type: GraphQLString },
-    updatedAt: { type: GraphQLString },
-    deletedAt: { type: GraphQLString },
+    birthDate: { type: GraphQLDate },
+    createdAt: { type: GraphQLDateTime },
+    updatedAt: { type: GraphQLDateTime },
+    deletedAt: { type: GraphQLDateTime },
   }
 });
 
@@ -25,36 +25,20 @@ export const user: GraphQLFieldConfig<{}, Context> = {
   resolve: async (_, { id }, { knex }) => {
     const [user] = await knex.select().from('user').where({ id }).limit(1);
 
-    return {
-      id: user.id,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-      createdAt: user.created_at,
-      updatedAt: user.updated_at,
-      deletedAt: user.deleted_at,
-    }
+    return user;
   }
 }
 
 export const usersList: GraphQLFieldConfig<{}, Context> = {
   type: new List('UserListResponse', User),
+  args: {
+
+  },
   resolve: async (_, args, { knex }) => {
     const [{ count }] = await knex('user').count({ count: 'id' });
     const items = await knex.select('*').from('user');
 
-    return {
-      count: count,
-      items: items.map(item => ({
-        id: item.id,
-        firstName: item.first_name,
-        lastName: item.last_name,
-        email: item.email,
-        createdAt: item.created_at,
-        updatedAt: item.updated_at,
-        deletedAt: item.deleted_at,  
-      }))
-    }
+    return { count: count, items: items }
   }
 }
 
@@ -64,11 +48,14 @@ export const userCreate: GraphQLFieldConfig<{}, Context> = {
     data: { type: UserCreateInput }
   },
   resolve: async (_, { data }, { knex }) => {    
-    const [id] = await knex('user')
-      .returning('id')
+    const id = uuid();
+
+    await knex('user')
       .insert({
+        id,
         first_name: data.firstName,
         last_name: data.lastName,
+        birth_date: data.birthDate,
         email: data.email,
         password: data.password,
       });
@@ -76,13 +63,14 @@ export const userCreate: GraphQLFieldConfig<{}, Context> = {
     const [user] = await knex.select().from('user').where({ id }).limit(1);
 
     return {
-      id: user.id,
-      firstName: user.first_name,
-      lastName: user.last_name,
+      id: id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      birthDate: user.birthDate,
       email: user.email,
-      createdAt: user.created_at,
-      updatedAt: user.updated_at,
-      deletedAt: user.deleted_at,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt,
     };
   }
 }
