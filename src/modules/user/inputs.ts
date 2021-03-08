@@ -1,5 +1,5 @@
 import { GraphQLInputObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
-import { IDPredicate, StringPredicate, GraphQLDate } from '../../shared/types';
+import { IDPredicate, StringPredicate, DatePredicate, GraphQLDate, DateTimePredicate } from '../../shared/graphql-types';
 
 export const UserCreateInput = new GraphQLInputObjectType({
   name: 'UserCreateInput',
@@ -19,5 +19,9 @@ export const UserFilter = new GraphQLInputObjectType({
     firstName: { type: StringPredicate },
     lastName: { type: StringPredicate },
     email: { type: StringPredicate },
+    birthDate: { type: DatePredicate },
+    createdAt: { type: DateTimePredicate },
+    updatedAt: { type: DateTimePredicate },
+    deletedAt: { type: DateTimePredicate },
   }
 })

@@ -1,7 +1,9 @@
-import { GraphQLFieldConfig, GraphQLID, GraphQLObjectType, GraphQLString } from 'graphql';
-import { Context, List, GraphQLDateTime, GraphQLDate } from '../../shared/types';
-import { UserCreateInput } from './inputs';
+import { GraphQLFieldConfig, GraphQLID, GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
+import { List, GraphQLDateTime, GraphQLDate } from '../../shared/graphql-types';
+import { UserCreateInput, UserFilter } from './inputs';
+import { Context, ListArguments } from '../../shared/types';
 import { v4 as uuid } from 'uuid';
+import { createFilter } from '../../shared/utils';
 
 export const User = new GraphQLObjectType({
   name: 'User',
@@ -17,6 +19,17 @@ export const User = new GraphQLObjectType({
   }
 });
 
+export type UserType = {
+  id: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  birthDate: string,
+  createdAt: string,
+  updatedAt: string,
+  deletedAt: string,
+}
+
 export const user: GraphQLFieldConfig<{}, Context> = {
   type: User,
   args: {
@@ -29,16 +42,26 @@ export const user: GraphQLFieldConfig<{}, Context> = {
   }
 }
 
-export const usersList: GraphQLFieldConfig<{}, Context> = {
+export const usersList: GraphQLFieldConfig<{}, Context, ListArguments<UserType>> = {
   type: new List('UserListResponse', User),
   args: {
-
+    filter: { type: UserFilter },
+    first: { type: GraphQLInt },
+    skip: { type: GraphQLInt },
   },
-  resolve: async (_, args, { knex }) => {
-    const [{ count }] = await knex('user').count({ count: 'id' });
-    const items = await knex.select('*').from('user');
+  resolve: (_, { first, skip, ...rest }, { knex }) => {
+    let query = knex('user');
 
-    return { count: count, items: items }
+    if (rest.filter) 
+      query = createFilter(query, rest.filter);
+      
+    if (first)
+      query = query.limit(first);
+      
+    if (skip)
+      query = query.offset(skip);
+      
+    return { query };
   }
 }
 
