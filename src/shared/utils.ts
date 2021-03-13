@@ -44,9 +44,15 @@ export function capitalizeFirstLetter (text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-export function createFilter<T>(builder: QueryBuilder, filter: Filter<T>): QueryBuilder {
-  let query = builder.clone();
-
+/**
+ * Appends filters to the query builder based on the data passed
+ * 
+ * @param query - The query builder object with a table already selected
+ * @param filter - The filter data
+ * 
+ * @returns {void}
+ */
+export function createFilter<T>(query: QueryBuilder, filter: Filter<T>): void {
   for (const field in filter) {
     const attr = toSnake(field)
 
@@ -55,30 +61,56 @@ export function createFilter<T>(builder: QueryBuilder, filter: Filter<T>): Query
         
         switch (method) {
           case 'equals':
-            query = query.where(attr, filter[field].equals);
+            query.where(attr, filter[field].equals);
             break;
           case 'not_equals':
-            query = query.whereNot(attr, filter[field].not_equals);
+            query.whereNot(attr, filter[field].not_equals);
             break;
           case 'in':
-            query = query.whereIn(attr, filter[field].in || []);
+            query.whereIn(attr, filter[field].in || []);
+            break;
+          case 'lt':
+            query.where(attr, '<', filter[field].lt || '');
+            break;
+          case 'lte':
+            query.where(attr, '<=', filter[field].lte || '');
+            break;
+          case 'gt':
+            query.where(attr, '>', filter[field].lte || '');
+            break;
+          case 'gte':
+            query.where(attr, '>=', filter[field].lte || '');
             break;
           case 'not_in':
-            query = query.whereNotIn(attr, filter[field].not_in || []);
+            query.whereNotIn(attr, filter[field].not_in || []);
             break;
           case 'contains':
-            query = query.where(attr, 'like', `%${filter[field].contains}%`);
+            query.where(attr, 'like', `%${filter[field].contains}%`);
             break;
           case 'starts_with':
-            query = query.where(attr, 'like', `${filter[field].starts_with}%`);
+            query.where(attr, 'like', `${filter[field].starts_with}%`);
+            break;
+          case 'not_starts_with':
+            query.where(attr, 'not like', `${filter[field].not_starts_with}%`);
             break;
           case 'ends_with':
-            query = query.where(attr, 'like', `%${filter[field].not_starts_with}`);
+            query.where(attr, 'like', `%${filter[field].ends_with}`);
+            break;
+          case 'not_ends_with':
+            query.where(attr, 'not like', `%${filter[field].not_ends_with}`);
             break;
         }
       }
+
+    } else {
+      if (field === 'OR') {
+        query.where(and => (filter[field] as Array<Filter<T>>)
+          .forEach(f => and.orWhere(or => createFilter(or, f))));
+
+      } else if (field === 'AND') {
+        query.where(builder => (filter[field] as Array<Filter<T>>)
+          .forEach(f => builder.where(and => createFilter(and, f))));
+      }
     }
   }
-
-  return query;
 }

@@ -52,14 +52,14 @@ export const usersList: GraphQLFieldConfig<{}, Context, ListArguments<UserType>>
   resolve: (_, { first, skip, ...rest }, { knex }) => {
     let query = knex('user');
 
-    if (rest.filter) 
-      query = createFilter(query, rest.filter);
+    if (rest.filter)
+      createFilter(query, rest.filter);
       
     if (first)
-      query = query.limit(first);
+      query.limit(first);
       
     if (skip)
-      query = query.offset(skip);
+      query.offset(skip);
       
     return { query };
   }

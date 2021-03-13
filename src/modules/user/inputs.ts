@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { IDPredicate, StringPredicate, DatePredicate, GraphQLDate, DateTimePredicate } from '../../shared/graphql-types';
 
 export const UserCreateInput = new GraphQLInputObjectType({
@@ -12,9 +12,9 @@ export const UserCreateInput = new GraphQLInputObjectType({
   }
 });
 
-export const UserFilter = new GraphQLInputObjectType({
+export const UserFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
   name: 'UserFilter',
-  fields: {
+  fields: () => ({
     id: { type: IDPredicate },
     firstName: { type: StringPredicate },
     lastName: { type: StringPredicate },
@@ -23,5 +23,7 @@ export const UserFilter = new GraphQLInputObjectType({
     createdAt: { type: DateTimePredicate },
     updatedAt: { type: DateTimePredicate },
     deletedAt: { type: DateTimePredicate },
-  }
+    OR: { type: new GraphQLList(new GraphQLNonNull(UserFilter)) },
+    AND: { type: new GraphQLList(new GraphQLNonNull(UserFilter)) },
+  })
 })
