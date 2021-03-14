@@ -1,22 +1,39 @@
 import { GraphQLFieldConfig, GraphQLID, GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
 import { List, GraphQLDateTime, GraphQLDate } from '../../shared/graphql-types';
 import { UserCreateInput, UserFilter } from './inputs';
+import { bookmarksList, BookmarkListResponse } from '../bookmark';
+import { BookmarkFilter } from '../bookmark/inputs';
 import { Context, ListArguments } from '../../shared/types';
 import { v4 as uuid } from 'uuid';
 import { createFilter } from '../../shared/utils';
 
-export const User = new GraphQLObjectType({
+export const User: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
-  fields: {
+  fields: () => ({
     id: { type: GraphQLID },
     firstName: { type: GraphQLString },
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
     birthDate: { type: GraphQLDate },
+    bookmarks: {
+      type: BookmarkListResponse,
+      args: {
+        filter: { type: BookmarkFilter },
+        first: { type: GraphQLInt },
+        skip: { type: GraphQLInt },
+      },
+      resolve: async (source, args, context, info) => {
+        if (bookmarksList.resolve && source.id) {
+          return await bookmarksList.resolve({ userId: source.id }, args, context, info);
+        }
+
+        return { count: 0, items: [] };
+      }
+    },
     createdAt: { type: GraphQLDateTime },
     updatedAt: { type: GraphQLDateTime },
     deletedAt: { type: GraphQLDateTime },
-  }
+  })
 });
 
 export type UserType = {
@@ -38,12 +55,14 @@ export const user: GraphQLFieldConfig<{}, Context> = {
   resolve: async (_, { id }, { knex }) => {
     const [user] = await knex.select().from('user').where({ id }).limit(1);
 
-    return user;
+    return user || null;
   }
 }
 
+export const UserListResponse = new List('UserListResponse', User);
+
 export const usersList: GraphQLFieldConfig<{}, Context, ListArguments<UserType>> = {
-  type: new List('UserListResponse', User),
+  type: UserListResponse,
   args: {
     filter: { type: UserFilter },
     first: { type: GraphQLInt },
