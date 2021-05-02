@@ -1,7 +1,17 @@
 import Knex from 'knex';
 
 export type Context = {
-  knex: Knex
+  knex: Knex,
+  user: {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+    avatar: string
+    createdAt: string
+    updatedAt: string
+    deletedAt: string
+  },
 }
 
 export type ListArguments<T> = {

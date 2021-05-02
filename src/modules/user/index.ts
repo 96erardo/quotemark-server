@@ -1,5 +1,5 @@
 import { GraphQLFieldConfig, GraphQLID, GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
-import { List, GraphQLDateTime, GraphQLDate } from '../../shared/graphql-types';
+import { List, GraphQLDateTime } from '../../shared/graphql-types';
 import { UserCreateInput, UserFilter } from './inputs';
 import { bookmarksList, BookmarkListResponse } from '../bookmark';
 import { BookmarkFilter } from '../bookmark/inputs';
@@ -14,7 +14,7 @@ export const User: GraphQLObjectType = new GraphQLObjectType({
     firstName: { type: GraphQLString },
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
-    birthDate: { type: GraphQLDate },
+    avatar: { type: GraphQLString },
     bookmarks: {
       type: BookmarkListResponse,
       args: {
@@ -41,7 +41,7 @@ export type UserType = {
   firstName: string,
   lastName: string,
   email: string,
-  birthDate: string,
+  avatar: string,
   createdAt: string,
   updatedAt: string,
   deletedAt: string,
@@ -49,14 +49,7 @@ export type UserType = {
 
 export const user: GraphQLFieldConfig<{}, Context> = {
   type: User,
-  args: {
-    id: { type: GraphQLString }
-  },
-  resolve: async (_, { id }, { knex }) => {
-    const [user] = await knex.select().from('user').where({ id }).limit(1);
-
-    return user || null;
-  }
+  resolve: async (_, { }, { user }) => user
 }
 
 export const UserListResponse = new List('UserListResponse', User);

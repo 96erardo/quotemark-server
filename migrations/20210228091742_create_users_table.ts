@@ -5,9 +5,8 @@ export async function up(knex: Knex): Promise<void> {
     table.string('id').primary();
     table.string('first_name').notNullable();
     table.string('last_name').notNullable();
-    table.date('birth_date').notNullable();
     table.string('email').notNullable();
-    table.string('password').notNullable();
+    table.string('avatar').notNullable();
     table.timestamps(false, true);
     table.dateTime('deleted_at').nullable();
   });
