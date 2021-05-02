@@ -7,6 +7,8 @@ export async function up(knex: Knex): Promise<void> {
     table.string('last_name').notNullable();
     table.string('email').notNullable();
     table.string('avatar').notNullable();
+    table.enum('role', ['admin', 'user']).defaultTo('user').notNullable();
+    table.enum('status', ['active', 'banned']).defaultTo('active').notNullable();
     table.timestamps(false, true);
     table.dateTime('deleted_at').nullable();
   });
