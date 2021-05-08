@@ -3,6 +3,15 @@ import { google, people_v1 } from 'googleapis';
 import { GaxiosResponse } from 'gaxios';
 import knex from '../configuration/knex';
 
+/**
+ * Global middleware that handles user authentication
+ * 
+ * @param req - The request object
+ * @param res - The response object
+ * @param next - Function to call the next route handler
+ * 
+ * @returns {Promise<void>}
+ */
 export const authenticate: RequestHandler = async (req, res, next) => {
   const { 1: accessToken } = req.get('Authorization')?.split(' ') || [];
   let response:  GaxiosResponse<people_v1.Schema$Person>;

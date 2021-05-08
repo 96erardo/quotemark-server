@@ -1,5 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { user, usersList, userCreate } from './user';
+import { user, usersList, userCreate, userUpdate } from './user';
 import { bookmark, bookmarksList, bookmarkCreate } from './bookmark';
 
 export default new GraphQLSchema({
@@ -16,6 +16,7 @@ export default new GraphQLSchema({
     name: 'Mutation',
     fields: {
       userCreate,
+      userUpdate,
       bookmarkCreate
     }
   })

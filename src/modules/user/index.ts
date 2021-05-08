@@ -1,11 +1,12 @@
 import { GraphQLFieldConfig, GraphQLID, GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
 import { List, GraphQLDateTime } from '../../shared/graphql-types';
-import { UserCreateInput, UserFilter } from './inputs';
+import { UserCreateInput, UserFilter, UserUpdateInput } from './inputs';
 import { bookmarksList, BookmarkListResponse } from '../bookmark';
 import { BookmarkFilter } from '../bookmark/inputs';
 import { Context, ListArguments } from '../../shared/types';
 import { v4 as uuid } from 'uuid';
 import { createFilter } from '../../shared/utils';
+import { inspect } from 'util';
 
 export const User: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
@@ -107,5 +108,37 @@ export const userCreate: GraphQLFieldConfig<{}, Context> = {
       updatedAt: user.updatedAt,
       deletedAt: user.deletedAt,
     };
+  }
+}
+
+export const userUpdate: GraphQLFieldConfig<{}, Context> = {
+  type: User,
+  args: {
+    data: { type: UserUpdateInput }
+  },
+  resolve: async (_, { data }, { knex, user }) => {
+    const res = await knex('user')
+      .where('id', user.id)
+      .update({
+        first_name: data.firstName && user.firstName,
+        last_name: data.lastName && user.lastName,
+      }, [
+        'id',
+        'first_name',
+        'last_name',
+        'email',
+        'avatar',
+        'role',
+        'status',
+        'created_at',
+        'updated_at',
+        'deleted_at'
+      ])
+
+    console.log('user', inspect(res, false, 10));
+
+    const [updated] = res;
+
+    return updated;
   }
 }

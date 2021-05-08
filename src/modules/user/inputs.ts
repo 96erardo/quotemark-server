@@ -12,6 +12,14 @@ export const UserCreateInput = new GraphQLInputObjectType({
   }
 });
 
+export const UserUpdateInput = new GraphQLInputObjectType({
+  name: 'UserUpdateInput',
+  fields: {
+    firstName: { type: GraphQLString },
+    lastName: { type: GraphQLString },
+  }
+});
+
 export const UserFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
   name: 'UserFilter',
   fields: () => ({
