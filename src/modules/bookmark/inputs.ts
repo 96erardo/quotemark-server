@@ -1,5 +1,5 @@
-import { GraphQLInputObjectType, GraphQLList, GraphQLString, GraphQLNonNull } from 'graphql';
-import { IDPredicate, StringPredicate, DateTimePredicate } from '../../shared/graphql-types';
+import { GraphQLInputObjectType, GraphQLList, GraphQLString, GraphQLNonNull } from 'graphql'
+import { IDPredicate, StringPredicate, DateTimePredicate } from '../../shared/graphql-types'
 
 export const BookmarkCreateInput = new GraphQLInputObjectType({
   name: 'BookmarkCreateInput',
@@ -25,7 +25,7 @@ export const BookmarkCreateInput = new GraphQLInputObjectType({
       }))
     }
   }
-});
+})
 
 export const BookmarkFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
   name: 'BookmarkFilter',
@@ -38,6 +38,6 @@ export const BookmarkFilter: GraphQLInputObjectType = new GraphQLInputObjectType
     updatedAt: { type: DateTimePredicate },
     deletedAt: { type: DateTimePredicate },
     OR: { type: new GraphQLList(new GraphQLNonNull(BookmarkFilter)) },
-    AND: { type: new GraphQLList(new GraphQLNonNull(BookmarkFilter)) },
+    AND: { type: new GraphQLList(new GraphQLNonNull(BookmarkFilter)) }
   })
 })

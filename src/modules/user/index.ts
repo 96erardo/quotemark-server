@@ -1,12 +1,12 @@
-import { GraphQLFieldConfig, GraphQLID, GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
-import { List, GraphQLDateTime } from '../../shared/graphql-types';
-import { UserCreateInput, UserFilter, UserUpdateInput } from './inputs';
-import { bookmarksList, BookmarkListResponse } from '../bookmark';
-import { BookmarkFilter } from '../bookmark/inputs';
-import { Context, ListArguments } from '../../shared/types';
-import { v4 as uuid } from 'uuid';
-import { createFilter } from '../../shared/utils';
-import { inspect } from 'util';
+import { GraphQLFieldConfig, GraphQLID, GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql'
+import { List, GraphQLDateTime } from '../../shared/graphql-types'
+import { UserCreateInput, UserFilter, UserUpdateInput } from './inputs'
+import { bookmarksList, BookmarkListResponse } from '../bookmark'
+import { BookmarkFilter } from '../bookmark/inputs'
+import { Context, ListArguments } from '../../shared/types'
+import { v4 as uuid } from 'uuid'
+import { createFilter } from '../../shared/utils'
+import { inspect } from 'util'
 
 export const User: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
@@ -21,21 +21,21 @@ export const User: GraphQLObjectType = new GraphQLObjectType({
       args: {
         filter: { type: BookmarkFilter },
         first: { type: GraphQLInt },
-        skip: { type: GraphQLInt },
+        skip: { type: GraphQLInt }
       },
       resolve: async (source, args, context, info) => {
         if (bookmarksList.resolve && source.id) {
-          return await bookmarksList.resolve({ userId: source.id }, args, context, info);
+          return await bookmarksList.resolve({ userId: source.id }, args, context, info)
         }
 
-        return { count: 0, items: [] };
+        return { count: 0, items: [] }
       }
     },
     createdAt: { type: GraphQLDateTime },
     updatedAt: { type: GraphQLDateTime },
-    deletedAt: { type: GraphQLDateTime },
+    deletedAt: { type: GraphQLDateTime }
   })
-});
+})
 
 export type UserType = {
   id: string,
@@ -50,31 +50,28 @@ export type UserType = {
 
 export const user: GraphQLFieldConfig<{}, Context> = {
   type: User,
-  resolve: async (_, { }, { user }) => user
+  resolve: async (_, args, { user }) => user
 }
 
-export const UserListResponse = new List('UserListResponse', User);
+export const UserListResponse = new List('UserListResponse', User)
 
 export const usersList: GraphQLFieldConfig<{}, Context, ListArguments<UserType>> = {
   type: UserListResponse,
   args: {
     filter: { type: UserFilter },
     first: { type: GraphQLInt },
-    skip: { type: GraphQLInt },
+    skip: { type: GraphQLInt }
   },
   resolve: (_, { first, skip, ...rest }, { knex }) => {
-    let query = knex('user');
+    const query = knex('user')
 
-    if (rest.filter)
-      createFilter(query, rest.filter);
-      
-    if (first)
-      query.limit(first);
-      
-    if (skip)
-      query.offset(skip);
-      
-    return { query };
+    if (rest.filter) { createFilter(query, rest.filter) }
+
+    if (first) { query.limit(first) }
+
+    if (skip) { query.offset(skip) }
+
+    return { query }
   }
 }
 
@@ -83,8 +80,8 @@ export const userCreate: GraphQLFieldConfig<{}, Context> = {
   args: {
     data: { type: UserCreateInput }
   },
-  resolve: async (_, { data }, { knex }) => {    
-    const id = uuid();
+  resolve: async (_, { data }, { knex }) => {
+    const id = uuid()
 
     await knex('user')
       .insert({
@@ -93,10 +90,10 @@ export const userCreate: GraphQLFieldConfig<{}, Context> = {
         last_name: data.lastName,
         birth_date: data.birthDate,
         email: data.email,
-        password: data.password,
-      });
+        password: data.password
+      })
 
-    const [user] = await knex.select().from('user').where({ id }).limit(1);
+    const [user] = await knex.select().from('user').where({ id }).limit(1)
 
     return {
       id: id,
@@ -106,8 +103,8 @@ export const userCreate: GraphQLFieldConfig<{}, Context> = {
       email: user.email,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-      deletedAt: user.deletedAt,
-    };
+      deletedAt: user.deletedAt
+    }
   }
 }
 
@@ -121,7 +118,7 @@ export const userUpdate: GraphQLFieldConfig<{}, Context> = {
       .where('id', user.id)
       .update({
         first_name: data.firstName && user.firstName,
-        last_name: data.lastName && user.lastName,
+        last_name: data.lastName && user.lastName
       }, [
         'id',
         'first_name',
@@ -135,10 +132,10 @@ export const userUpdate: GraphQLFieldConfig<{}, Context> = {
         'deleted_at'
       ])
 
-    console.log('user', inspect(res, false, 10));
+    console.log('user', inspect(res, false, 10))
 
-    const [updated] = res;
+    const [updated] = res
 
-    return updated;
+    return updated
   }
 }

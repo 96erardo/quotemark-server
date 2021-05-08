@@ -1,4 +1,5 @@
-import Knex from 'knex';
+/* eslint-disable camelcase, no-unused-vars */
+import Knex from 'knex'
 
 export type Context = {
   knex: Knex,
@@ -14,11 +15,7 @@ export type Context = {
   },
 }
 
-export type ListArguments<T> = {
-  first?: number,
-  skip?: number,
-  filter?: Filter<Partial<T>>
-}
+export type Value = string | number | boolean;
 
 export type Filter<T> = {
   [key in keyof T]: {
@@ -38,4 +35,8 @@ export type Filter<T> = {
   }
 }
 
-export type Value = string | number | boolean;
+export type ListArguments<T> = {
+  first?: number,
+  skip?: number,
+  filter?: Filter<Partial<T>>
+}

@@ -1,6 +1,6 @@
-import { GraphQLID, GraphQLInt, GraphQLList, GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLScalarType, GraphQLBoolean } from 'graphql';
-import { QueryBuilder } from 'knex';
-import { Context } from './types';
+import { GraphQLID, GraphQLInt, GraphQLList, GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLScalarType, GraphQLBoolean } from 'graphql'
+import { QueryBuilder } from 'knex'
+import { Context } from './types'
 
 export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
   constructor (name: string, type: GraphQLObjectType) {
@@ -15,9 +15,9 @@ export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
               .clear('select')
               .clear('limit')
               .clear('offset')
-              .count({ count: 'id' });
+              .count({ count: 'id' })
 
-            return count;
+            return count
           }
         },
         items: {
@@ -25,45 +25,45 @@ export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
           resolve: async ({ query }) => await query.clone().select('*')
         }
       }
-    });
+    })
   }
 }
 
 export const GraphQLDate = new GraphQLScalarType({
   name: 'Date',
   serialize: (value: Date) => {
-    const year = value.getFullYear();
-    const month = value.getMonth() < 9 ? `0${value.getMonth() + 1}` : `${value.getMonth() + 1}`;
-    const day = value.getDate() < 10 ? `0${value.getDate()}` : `${value.getDate()}`;
+    const year = value.getFullYear()
+    const month = value.getMonth() < 9 ? `0${value.getMonth() + 1}` : `${value.getMonth() + 1}`
+    const day = value.getDate() < 10 ? `0${value.getDate()}` : `${value.getDate()}`
 
-    return `${year}-${month}-${day}`;
+    return `${year}-${month}-${day}`
   },
   parseValue: (value: string) => {
-    const date = value.trim();
+    const date = value.trim()
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      throw new Error('Date should have YYYY-MM-DD format');
+      throw new Error('Date should have YYYY-MM-DD format')
     }
 
-    return date;
+    return date
   },
   description: 'A date string in YYYY-MM-DD format'
-});
+})
 
 export const GraphQLDateTime = new GraphQLScalarType({
   name: 'DateTime',
   serialize: (date: Date) => date.toISOString(),
   parseValue: (value: string) => {
-    const date = value.trim();
+    const date = value.trim()
 
     if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,6}Z$/.test(date)) {
-      throw new Error('Date time should have ISO 8601 format');
+      throw new Error('Date time should have ISO 8601 format')
     }
 
-    return date.replace('T', ' ').replace('Z', '');
+    return date.replace('T', ' ').replace('Z', '')
   },
   description: 'A DateTime string in ISO 8601 format'
-});
+})
 
 export const IDPredicate = new GraphQLInputObjectType({
   name: 'IDPredicate',
@@ -76,9 +76,9 @@ export const IDPredicate = new GraphQLInputObjectType({
     starts_with: { type: GraphQLID },
     not_starts_with: { type: GraphQLID },
     ends_with: { type: GraphQLID },
-    not_ends_with: { type: GraphQLID },
+    not_ends_with: { type: GraphQLID }
   }
-});
+})
 
 export const IntPredicate = new GraphQLInputObjectType({
   name: 'IntPredicate',
@@ -90,7 +90,7 @@ export const IntPredicate = new GraphQLInputObjectType({
     lt: { type: GraphQLInt },
     lte: { type: GraphQLInt },
     gt: { type: GraphQLInt },
-    gte: { type: GraphQLInt },
+    gte: { type: GraphQLInt }
   }
 })
 
@@ -105,9 +105,9 @@ export const StringPredicate = new GraphQLInputObjectType({
     starts_with: { type: GraphQLString },
     not_starts_with: { type: GraphQLString },
     ends_with: { type: GraphQLString },
-    not_ends_with: { type: GraphQLString },
+    not_ends_with: { type: GraphQLString }
   }
-});
+})
 
 export const DatePredicate = new GraphQLInputObjectType({
   name: 'DatePredicate',
@@ -121,7 +121,7 @@ export const DatePredicate = new GraphQLInputObjectType({
     gt: { type: GraphQLDate },
     gte: { type: GraphQLDate },
     is_empty: { type: GraphQLBoolean },
-    is_not_empty: { type: GraphQLBoolean },
+    is_not_empty: { type: GraphQLBoolean }
   }
 })
 
@@ -137,6 +137,6 @@ export const DateTimePredicate = new GraphQLInputObjectType({
     gt: { type: GraphQLDate },
     gte: { type: GraphQLDate },
     is_empty: { type: GraphQLBoolean },
-    is_not_empty: { type: GraphQLBoolean },
+    is_not_empty: { type: GraphQLBoolean }
   }
 })

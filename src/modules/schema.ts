@@ -1,6 +1,6 @@
-import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { user, usersList, userCreate, userUpdate } from './user';
-import { bookmark, bookmarksList, bookmarkCreate } from './bookmark';
+import { GraphQLObjectType, GraphQLSchema } from 'graphql'
+import { user, usersList, userCreate, userUpdate } from './user'
+import { bookmark, bookmarksList, bookmarkCreate } from './bookmark'
 
 export default new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -20,4 +20,4 @@ export default new GraphQLSchema({
       bookmarkCreate
     }
   })
-});
+})
