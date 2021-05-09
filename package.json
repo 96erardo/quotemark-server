@@ -7,6 +7,7 @@
     "build": "tsc",
     "start": "ts-node-dev --clear -r dotenv/config src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install",
     "eslint": "eslint --fix \"src/**\"",
     "knex:init": "knex init -x ts",
     "migrate:latest": "knex migrate:latest",
@@ -18,7 +19,7 @@
   },
   "keywords": [
     "graphql",
-    "bookmarks",
+    "quotes",
     "node",
     "express"
   ],
@@ -42,6 +43,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
+    "husky": "^6.0.0",
     "ts-node-dev": "^1.1.1",
     "typescript": "^4.2.2"
   },
