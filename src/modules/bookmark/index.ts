@@ -3,7 +3,8 @@ import { List, GraphQLDateTime } from '../../shared/graphql-types'
 import { Context, ListArguments } from '../../shared/types'
 import { createFilter } from '../../shared/utils'
 import { BookmarkFilter, BookmarkCreateInput } from './inputs'
-import { User, user } from '../user'
+import { User } from '../user/types'
+import { user } from '../user/user'
 import { v4 as uuid } from 'uuid'
 
 type Source = Partial<{
