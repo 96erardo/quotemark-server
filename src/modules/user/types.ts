@@ -1,8 +1,24 @@
-import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInt } from 'graphql'
+import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInt, GraphQLEnumType } from 'graphql'
 import { BookmarkListResponse } from '../bookmark/index'
 import { BookmarkFilter } from '../bookmark/inputs'
 import { GraphQLDateTime } from '../../shared/graphql-types'
 import { bookmarksList } from '../bookmark'
+
+export const RolesType = new GraphQLEnumType({
+  name: 'Role',
+  values: {
+    admin: { value: 'admin' },
+    user: { value: 'user' }
+  }
+})
+
+export const StatusType = new GraphQLEnumType({
+  name: 'Status',
+  values: {
+    active: { value: 'active' },
+    banned: { value: 'banned' }
+  }
+})
 
 export const User: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
@@ -12,8 +28,8 @@ export const User: GraphQLObjectType = new GraphQLObjectType({
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
     avatar: { type: GraphQLString },
-    role: { type: GraphQLString },
-    status: { type: GraphQLString },
+    role: { type: RolesType },
+    status: { type: StatusType },
     bookmarks: {
       type: BookmarkListResponse,
       args: {

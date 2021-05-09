@@ -9,6 +9,8 @@ export type Context = {
     lastName: string
     email: string
     avatar: string
+    role: 'admin' | 'user',
+    status: 'active' | 'banned',
     createdAt: string
     updatedAt: string
     deletedAt: string

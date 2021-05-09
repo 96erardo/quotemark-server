@@ -1,5 +1,12 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql'
-import { user, usersList, userUpdate, userBan, userUnban } from './user'
+import {
+  user,
+  usersList,
+  userUpdate,
+  userBan,
+  userUnban,
+  userSetRole
+} from './user'
 // import { bookmark, bookmarksList, bookmarkCreate } from './bookmark'
 
 export default new GraphQLSchema({
@@ -17,7 +24,8 @@ export default new GraphQLSchema({
     fields: {
       userUpdate,
       userBan,
-      userUnban
+      userUnban,
+      userSetRole
       // bookmarkCreate
     }
   })

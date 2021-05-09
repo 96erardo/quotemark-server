@@ -143,4 +143,56 @@ describe('user related resolvers', () => {
     expect(userUnban).not.toBeNull();
     expect(userUnban).toHaveProperty('status', 'active');
   })
+
+  test('userSetRole', async () => {
+    const [userToAdmin] = await knex('user')
+      .where('role', 'user')
+      .limit(1);
+
+    let response = await req.post('/graphql')
+      .send({
+        query: `
+          mutation ($id: ID!, $role: Role!) {
+            userSetRole (id: $id, role: $role) {
+              id
+              firstName
+              lastName
+              role
+            }
+          }
+        `,
+        variables: {
+          id: userToAdmin.id,
+          role: 'admin',
+        }
+      })
+
+    expect(response.body).toHaveProperty('data.userSetRole');
+
+    expect(response.body.data.userSetRole).not.toBeNull();
+    expect(response.body.data.userSetRole).toHaveProperty('role', 'admin');
+
+    response = await req.post('/graphql')
+      .send({
+        query: `
+          mutation ($id: ID!, $role: Role!) {
+            userSetRole (id: $id, role: $role) {
+              id
+              firstName
+              lastName
+              role
+            }
+          }
+        `,
+        variables: {
+          id: userToAdmin.id,
+          role: 'user',
+        }
+      })
+
+    expect(response.body).toHaveProperty('data.userSetRole');
+
+    expect(response.body.data.userSetRole).not.toBeNull();
+    expect(response.body.data.userSetRole).toHaveProperty('role', 'user');
+  })
 })
