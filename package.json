@@ -5,13 +5,15 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node-dev --clear -r dotenv/config src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=development ts-node-dev --clear -r dotenv/config src/index.ts",
+    "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
     "prepare": "husky install",
     "eslint": "eslint --fix \"src/**\"",
     "knex:init": "knex init -x ts",
     "migrate:latest": "knex migrate:latest",
-    "migrate:rollback": "knex migrate:rollback"
+    "migrate:rollback": "knex migrate:down",
+    "migrate:reset": "knex migrate:rollback --all && knex migrate:latest"
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,7 @@
   },
   "homepage": "https://github.com/GerardoAGL96/libromarks-server#readme",
   "devDependencies": {
+    "@jest/globals": "^26.6.2",
     "@tsconfig/node12": "^1.0.7",
     "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
@@ -37,6 +40,7 @@
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "@typescript-eslint/parser": "^4.22.1",
+    "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "eslint": "^7.26.0",
     "eslint-config-standard": "^16.0.2",
@@ -44,6 +48,8 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "husky": "^6.0.0",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.6",
     "ts-node-dev": "^1.1.1",
     "typescript": "^4.2.2"
   },

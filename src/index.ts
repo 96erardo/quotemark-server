@@ -29,6 +29,10 @@ app.use('/graphql', graphqlHTTP((_, res) => {
   }
 }))
 
-app.listen(4000, () => {
-  console.log('Running a GraphQL API server at http://localhost:4000/graphql')
-})
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(4000, () => {
+    console.log('Running a GraphQL API server at http://localhost:4000/graphql')
+  });
+}
+
+export default app;
