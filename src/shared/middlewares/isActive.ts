@@ -1,5 +1,5 @@
-import { skip } from 'graphql-resolvers'
 import { GraphQLFieldResolver } from 'graphql'
+import { skip } from '../utils'
 import { Context } from '../types'
 
 /**

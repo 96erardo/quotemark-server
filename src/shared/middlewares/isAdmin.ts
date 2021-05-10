@@ -1,6 +1,6 @@
-import { skip } from 'graphql-resolvers'
 import { GraphQLFieldResolver } from 'graphql'
 import { Context } from '../types'
+import { skip } from '../utils'
 
 /**
  * Checks that the user currently authenticated is an admin

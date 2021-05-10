@@ -1,5 +1,6 @@
 import { QueryBuilder } from 'knex'
 import { Filter } from './types'
+import { GraphQLFieldResolver } from 'graphql'
 
 export function convertToCamel (row: Record<string, any>) {
   return Object.keys(row).reduce((acum, key) => ({
@@ -110,3 +111,24 @@ export function createFilter<T> (query: QueryBuilder, filter: Filter<T>): void {
     }
   }
 }
+
+export const skip: undefined = undefined
+
+/**
+ * Left-first composition for methods of any type.
+ *
+ * @param funcs - resolver implementations.
+ *
+ * @return The combined functions.
+ */
+export function combine<
+  S,
+  C,
+  A = Record<string, any>
+> (...funcs: Array<GraphQLFieldResolver<S, C, A>>): GraphQLFieldResolver<S, C, A> {
+  return (...args) => funcs.reduce(
+    (prevPromise, resolver) =>
+      prevPromise.then(prev => (prev === skip ? resolver(...args) : prev)),
+    Promise.resolve()
+  )
+};

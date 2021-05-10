@@ -6,6 +6,8 @@ import {
 } from 'graphql'
 import { User } from './types'
 import { Context } from '../../shared/types'
+import { combine } from '../../shared/utils'
+import { isActive } from '../../shared/middlewares/isActive'
 
 const UserUpdateInput = new GraphQLInputObjectType({
   name: 'UserUpdateInput',
@@ -20,18 +22,21 @@ export const userUpdate: GraphQLFieldConfig<{}, Context> = {
   args: {
     data: { type: GraphQLNonNull(UserUpdateInput) }
   },
-  resolve: async (_, { data }, { knex, user }) => {
-    await knex('user')
-      .where('id', user.id)
-      .update({
-        first_name: data.firstName || user.firstName,
-        last_name: data.lastName || user.lastName
-      })
+  resolve: combine(
+    isActive,
+    async (_, { data }, { knex, user }) => {
+      await knex('user')
+        .where('id', user.id)
+        .update({
+          first_name: data.firstName || user.firstName,
+          last_name: data.lastName || user.lastName
+        })
 
-    const [result] = await knex('user')
-      .select('*')
-      .where('id', user.id)
+      const [result] = await knex('user')
+        .select('*')
+        .where('id', user.id)
 
-    return result
-  }
+      return result
+    }
+  )
 }

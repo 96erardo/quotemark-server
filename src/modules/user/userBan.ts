@@ -1,5 +1,8 @@
 import { GraphQLFieldConfig, GraphQLID, GraphQLNonNull } from 'graphql'
 import { Context } from '../../shared/types'
+import { combine } from '../../shared/utils'
+import { isActive } from '../../shared/middlewares/isActive'
+import { isAdmin } from '../../shared/middlewares/isAdmin'
 import { User } from './types'
 
 export const userBan: GraphQLFieldConfig<{}, Context> = {
@@ -7,17 +10,21 @@ export const userBan: GraphQLFieldConfig<{}, Context> = {
   args: {
     id: { type: GraphQLNonNull(GraphQLID) }
   },
-  resolve: async (_, { id }, { knex }) => {
-    await knex('user')
-      .where('id', id)
-      .update({
-        status: 'banned'
-      })
+  resolve: combine(
+    isActive,
+    isAdmin,
+    async (_, { id }, { knex }) => {
+      await knex('user')
+        .where('id', id)
+        .update({
+          status: 'banned'
+        })
 
-    const [result] = await knex('user')
-      .select('*')
-      .where('id', id)
+      const [result] = await knex('user')
+        .select('*')
+        .where('id', id)
 
-    return result
-  }
+      return result
+    }
+  )
 }
