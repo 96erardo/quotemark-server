@@ -7,14 +7,19 @@ import {
   userUnban,
   userSetRole
 } from './user'
-// import { bookmark, bookmarksList, bookmarkCreate } from './bookmark'
+import {
+  quoteUpdate,
+  quoteCreate,
+  quotesList
+} from './quote'
 
 export default new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
     fields: {
       user,
-      usersList
+      usersList,
+      quotesList
       // bookmark,
       // bookmarksList
     }
@@ -25,8 +30,9 @@ export default new GraphQLSchema({
       userUpdate,
       userBan,
       userUnban,
-      userSetRole
-      // bookmarkCreate
+      userSetRole,
+      quoteUpdate,
+      quoteCreate,
     }
   })
 })

@@ -13,7 +13,7 @@ beforeAll((done) => {
     req = request.agent(server);
     
     /**
-     * Setting authenticated user as non admin
+     * Setting authenticated user as banned
      * and fetching him
      */
     knex('user')
@@ -34,7 +34,7 @@ afterAll((done) => {
   server.close(() => {
     /**
      * Setting the authenticated user back
-     * an admin
+     * an active
      */
     knex('user')
       .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
