@@ -10,19 +10,19 @@ let user: { id: string };
 
 beforeAll((done) => {
   server = app.listen(4000, () => {
-      req = request.agent(server);
+    req = request.agent(server);
 
-      knex('user')
-        .select('*')
-        .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
-        .limit(1)
-        .then(result => {
-          user = result[0];
+    knex('user')
+      .select('*')
+      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
+      .limit(1)
+      .then(result => {
+        user = result[0];
 
-          if (done) {
-            done();
-          }          
-        });  
+        if (done) {
+          done();
+        }          
+      });
   });
 });
 

@@ -25,8 +25,6 @@ export const userSetRole: GraphQLFieldConfig<{}, Context> = {
         .select('*')
         .where('id', id)
 
-      console.log('result', result)
-
       return result
     }
   )

@@ -1,6 +1,8 @@
 import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLString, GraphQLNonNull } from 'graphql'
 import { Quote } from './types'
 import { Context } from '../../shared/types'
+import { isActive } from '../../shared/middlewares/isActive'
+import { combine } from '../../shared/utils'
 import { v4 as uuid } from 'uuid'
 
 const QuoteCreateInput = new GraphQLInputObjectType({
@@ -15,22 +17,25 @@ const QuoteCreateInput = new GraphQLInputObjectType({
 export const quoteCreate: GraphQLFieldConfig<{}, Context> = {
   type: Quote,
   args: {
-    data: { type: QuoteCreateInput }
+    data: { type: new GraphQLNonNull(QuoteCreateInput) }
   },
-  resolve: async (_, { data }, { knex, user }) => {
-    const id = uuid()
+  resolve: combine(
+    isActive,
+    async (_, { data }, { knex, user }) => {
+      const id = uuid()
 
-    await knex('quote')
-      .insert({
-        id,
-        name: data.name,
-        content: data.content,
-        link: data.link,
-        user_id: user.id
-      })
+      await knex('quote')
+        .insert({
+          id,
+          name: data.name,
+          content: data.content,
+          link: data.link,
+          user_id: user.id
+        })
 
-    const [quote] = await knex.select().from('quote').where({ id }).limit(1)
+      const [quote] = await knex.select().from('quote').where({ id }).limit(1)
 
-    return quote
-  }
+      return quote
+    }
+  )
 }

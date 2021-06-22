@@ -7,9 +7,9 @@ import {
 } from 'graphql'
 import { IDPredicate, StringPredicate, DateTimePredicate, List } from '../../shared/graphql-types'
 import { Quote, QuoteType } from './types'
-
-import { createFilter } from '../../shared/utils'
+import { createFilter, combine } from '../../shared/utils'
 import { Context, ListArguments } from '../../shared/types'
+import { isActive } from '../../shared/middlewares/isActive'
 
 export const QuoteListResponse = new List('QuoteListResponse', Quote)
 
@@ -35,17 +35,20 @@ export const quotesList: GraphQLFieldConfig<{}, Context, ListArguments<QuoteType
     first: { type: GraphQLInt },
     skip: { type: GraphQLInt }
   },
-  resolve: async (_, { first, skip, filter }, { knex, user }) => {
-    const query = knex('quote')
+  resolve: combine(
+    isActive,
+    async (_, { first, skip, filter }, { knex, user }) => {
+      const query = knex('quote')
 
-    query.where('user_id', user.id)
+      query.where('user_id', user.id)
 
-    if (filter) { createFilter(query, filter) }
+      if (filter) { createFilter(query, filter) }
 
-    if (first) { query.limit(first) }
+      if (first) { query.limit(first) }
 
-    if (skip) { query.offset(skip) }
+      if (skip) { query.offset(skip) }
 
-    return { query }
-  }
+      return { query }
+    }
+  )
 }
