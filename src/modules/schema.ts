@@ -10,6 +10,7 @@ import {
 import {
   quoteUpdate,
   quoteCreate,
+  quoteDelete,
   quotesList
 } from './quote'
 
@@ -33,6 +34,7 @@ export default new GraphQLSchema({
       userSetRole,
       quoteUpdate,
       quoteCreate,
+      quoteDelete
     }
   })
 })

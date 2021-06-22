@@ -1,14 +1,14 @@
-import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLString, GraphQLNonNull } from 'graphql';
-import { Quote } from './types';
-import { Context } from '../../shared/types';
-import { v4 as uuid } from 'uuid';
+import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLString, GraphQLNonNull } from 'graphql'
+import { Quote } from './types'
+import { Context } from '../../shared/types'
+import { v4 as uuid } from 'uuid'
 
 const QuoteCreateInput = new GraphQLInputObjectType({
   name: 'QuoteCreateInput',
   fields: {
     name: { type: GraphQLString },
     content: { type: new GraphQLNonNull(GraphQLString) },
-    link: { type: new GraphQLNonNull(GraphQLString) },
+    link: { type: new GraphQLNonNull(GraphQLString) }
   }
 })
 

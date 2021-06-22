@@ -1,6 +1,6 @@
-import { GraphQLObjectType, GraphQLID, GraphQLString } from 'graphql';
-import { GraphQLDateTime } from '../../shared/graphql-types';
-import { User, user } from '../user';
+import { GraphQLObjectType, GraphQLID, GraphQLString } from 'graphql'
+import { GraphQLDateTime } from '../../shared/graphql-types'
+import { User, user } from '../user'
 
 export const Quote = new GraphQLObjectType({
   name: 'Quote',

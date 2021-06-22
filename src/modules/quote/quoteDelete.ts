@@ -1,0 +1,47 @@
+import { GraphQLFieldConfig, GraphQLID, GraphQLNonNull } from 'graphql'
+import { Context } from '../../shared/types'
+import { DeleteResult } from '../../shared/graphql-types'
+
+export const quoteDelete: GraphQLFieldConfig<{}, Context> = {
+  type: DeleteResult,
+  args: {
+    id: { type: new GraphQLNonNull(GraphQLID) }
+  },
+  resolve: async (_, { id }, { knex, user }) => {
+    const [quote] = await knex('quote')
+      .select('*')
+      .where('id', id)
+      .whereNull('deleted_at')
+      .limit(1)
+
+    if (!quote) {
+      return {
+        success: false,
+        message: 'The quote you are trying to delete does not exist'
+      }
+    }
+
+    await knex('quote')
+      .where('id', id)
+      .where('user_id', user.id)
+      .update({
+        deleted_at: new Date()
+      })
+
+    const [deleted] = await knex('quote')
+      .where('id', id)
+      .whereNotNull('deleted_at')
+      .limit(1)
+
+    if (!deleted) {
+      return {
+        success: false,
+        message: 'You don\'t have permission to perform this operation'
+      }
+    }
+
+    return {
+      success: true
+    }
+  }
+}

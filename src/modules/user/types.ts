@@ -42,7 +42,7 @@ export const User: GraphQLObjectType = new GraphQLObjectType({
         //   return await bookmarksList.resolve({ userId: source.id }, args, context, info)
         // }
 
-        return [];
+        return []
       }
     },
     createdAt: { type: GraphQLDateTime },

@@ -1,6 +1,7 @@
-export * from './quoteCreate';
-export * from './quoteUpdate';
-export * from './quotesList';
+export * from './quoteCreate'
+export * from './quoteUpdate'
+export * from './quoteDelete'
+export * from './quotesList'
 
 // import { GraphQLFieldConfig, GraphQLID, GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql'
 // import { List, GraphQLDateTime } from '../../shared/graphql-types'

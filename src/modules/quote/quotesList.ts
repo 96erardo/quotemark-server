@@ -1,15 +1,15 @@
-import { 
-  GraphQLInputObjectType, 
-  GraphQLList, 
+import {
+  GraphQLInputObjectType,
+  GraphQLList,
   GraphQLNonNull,
   GraphQLInt,
-  GraphQLFieldConfig,
+  GraphQLFieldConfig
 } from 'graphql'
-import { IDPredicate, StringPredicate, DateTimePredicate } from '../../shared/graphql-types'
-import { Quote, QuoteType } from './types';
-import { List } from '../../shared/graphql-types';
-import { createFilter } from '../../shared/utils';
-import { Context, ListArguments } from '../../shared/types';
+import { IDPredicate, StringPredicate, DateTimePredicate, List } from '../../shared/graphql-types'
+import { Quote, QuoteType } from './types'
+
+import { createFilter } from '../../shared/utils'
+import { Context, ListArguments } from '../../shared/types'
 
 export const QuoteListResponse = new List('QuoteListResponse', Quote)
 

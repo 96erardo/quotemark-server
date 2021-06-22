@@ -29,6 +29,14 @@ export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
   }
 }
 
+export const DeleteResult = new GraphQLObjectType({
+  name: 'DeleteResult',
+  fields: {
+    success: { type: GraphQLBoolean },
+    message: { type: GraphQLString }
+  }
+})
+
 export const GraphQLDate = new GraphQLScalarType({
   name: 'Date',
   serialize: (value: Date) => {
