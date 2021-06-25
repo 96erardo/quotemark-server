@@ -7,6 +7,7 @@ import app from '../../../src/index';
 let server: Server;
 let req: request.SuperAgentTest;
 let user: { id: string };
+let quotes: Array<string> = [];
 
 beforeAll((done) => {
   server = app.listen(4000, () => {
@@ -28,7 +29,7 @@ beforeAll((done) => {
 
 afterAll((done) => {
   knex('quote')
-    .where('user_id', user.id)
+    .whereIn('id', quotes)
     .del()
     .then(() =>
       server.close(() => done && done())
@@ -67,6 +68,8 @@ describe('quoteCreate as an active user', () => {
     expect(response.body.data.quoteCreate).toHaveProperty('user.id', user.id);
     expect(response.body.data.quoteCreate).toHaveProperty('name', 'Quote #1');
 
+    quotes.push(response.body.data.quoteCreate.id)
+
     response = await req.post('/graphql')
       .send({
         query: `
@@ -97,6 +100,8 @@ describe('quoteCreate as an active user', () => {
     expect(response.body.data.quoteCreate).toHaveProperty('user.id', user.id);
     expect(response.body.data.quoteCreate).toHaveProperty('name', 'Quote #2');
 
+    quotes.push(response.body.data.quoteCreate.id)
+
     response = await req.post('/graphql')
       .send({
         query: `
@@ -126,6 +131,8 @@ describe('quoteCreate as an active user', () => {
     expect(response.body.data.quoteCreate).not.toBeNull();
     expect(response.body.data.quoteCreate).toHaveProperty('user.id', user.id);
     expect(response.body.data.quoteCreate).toHaveProperty('name', 'Quote #3');
+
+    quotes.push(response.body.data.quoteCreate.id)
   })
 
   it('Should fail when content is missing', async () => {
