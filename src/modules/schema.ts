@@ -13,6 +13,9 @@ import {
   quoteDelete,
   quotesList
 } from './quote'
+import {
+  storyCreate
+} from './story';
 
 export default new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -34,7 +37,8 @@ export default new GraphQLSchema({
       userSetRole,
       quoteUpdate,
       quoteCreate,
-      quoteDelete
+      quoteDelete,
+      storyCreate,
     }
   })
 })

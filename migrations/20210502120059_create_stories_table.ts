@@ -7,10 +7,15 @@ export async function up(knex: Knex): Promise<void> {
     table.text('content').notNullable();
     table.string('link', 2048).notNullable();
     table.string('quote_id').notNullable();
+    table.string('user_id').notNullable();
     table.timestamps(false, true);
     table.dateTime('deleted_at').nullable();
 
     table.foreign('quote_id').references('quote.id')
+      .onUpdate('RESTRICT')
+      .onDelete('CASCADE')
+
+    table.foreign('user_id').references('user.id')
       .onUpdate('RESTRICT')
       .onDelete('CASCADE')
   })
