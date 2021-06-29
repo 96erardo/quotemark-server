@@ -38,9 +38,6 @@ beforeAll((done) => {
       .then((result) => {
         otherQuote = result[0];
 
-        console.log('otherQuote', otherQuote);
-        console.log('ownedQuote', ownedQuote);
-          
         if (done) {
           done();
         }

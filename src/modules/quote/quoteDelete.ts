@@ -25,24 +25,19 @@ export const quoteDelete: GraphQLFieldConfig<{}, Context> = {
         }
       }
 
+      if (quote.userId !== user.id) {
+        return {
+          success: false,
+          message: 'You don\'t have permission to perform this operation'
+        }
+      }
+
       await knex('quote')
         .where('id', id)
         .where('user_id', user.id)
         .update({
           deleted_at: new Date()
         })
-
-      const [deleted] = await knex('quote')
-        .where('id', id)
-        .whereNotNull('deleted_at')
-        .limit(1)
-
-      if (!deleted) {
-        return {
-          success: false,
-          message: 'You don\'t have permission to perform this operation'
-        }
-      }
 
       return {
         success: true
