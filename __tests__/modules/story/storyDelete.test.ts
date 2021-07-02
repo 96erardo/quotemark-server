@@ -46,10 +46,8 @@ beforeAll((done) => {
 });
 
 afterAll((done) => {
-  // knex('story').where('id', id).del()
-    // .then(() =>  server.close(() => done && done()))
-
-  server.close(() => done && done())
+  knex('story').where('id', id).del()
+    .then(() =>  server.close(() => done && done()))
 })
 
 describe('storyDelete as an active user', () => {
