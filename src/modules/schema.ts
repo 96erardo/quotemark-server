@@ -14,8 +14,9 @@ import {
   quotesList
 } from './quote'
 import {
+  storiesList,
   storyCreate
-} from './story';
+} from './story'
 
 export default new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -23,9 +24,8 @@ export default new GraphQLSchema({
     fields: {
       user,
       usersList,
-      quotesList
-      // bookmark,
-      // bookmarksList
+      quotesList,
+      storiesList
     }
   }),
   mutation: new GraphQLObjectType({
@@ -38,7 +38,7 @@ export default new GraphQLSchema({
       quoteUpdate,
       quoteCreate,
       quoteDelete,
-      storyCreate,
+      storyCreate
     }
   })
 })

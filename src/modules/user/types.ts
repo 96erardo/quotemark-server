@@ -1,8 +1,5 @@
-import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInt, GraphQLEnumType, GraphQLList } from 'graphql'
-// import { BookmarkListResponse } from '../quote/index'
-// import { BookmarkFilter } from '../quote/inputs'
+import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInt, GraphQLEnumType } from 'graphql'
 import { GraphQLDateTime } from '../../shared/graphql-types'
-// import { bookmarksList } from '../quote'
 
 export const RolesType = new GraphQLEnumType({
   name: 'Role',
@@ -20,6 +17,15 @@ export const StatusType = new GraphQLEnumType({
   }
 })
 
+export const UserStoriesCount = new GraphQLObjectType({
+  name: 'UserStoriesCount',
+  fields: {
+    count: {
+      type: GraphQLInt
+    }
+  }
+})
+
 export const User: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
@@ -30,21 +36,7 @@ export const User: GraphQLObjectType = new GraphQLObjectType({
     avatar: { type: GraphQLString },
     role: { type: RolesType },
     status: { type: StatusType },
-    bookmarks: {
-      type: GraphQLList(GraphQLString),
-      args: {
-        // filter: { type: BookmarkFilter },
-        first: { type: GraphQLInt },
-        skip: { type: GraphQLInt }
-      },
-      resolve: async (source, args, context, info) => {
-        // if (bookmarksList.resolve && source.id) {
-        //   return await bookmarksList.resolve({ userId: source.id }, args, context, info)
-        // }
-
-        return []
-      }
-    },
+    stories: { type: UserStoriesCount },
     createdAt: { type: GraphQLDateTime },
     updatedAt: { type: GraphQLDateTime },
     deletedAt: { type: GraphQLDateTime }

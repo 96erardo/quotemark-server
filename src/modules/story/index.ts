@@ -1,1 +1,2 @@
-export * from './storyCreate';
+export * from './storyCreate'
+export * from './storiesList'
