@@ -34,6 +34,7 @@ const UsersStoryListResponse = new GraphQLObjectType<{ first: number, skip: numb
               .count('story.id', { as: 'count' })
               .from('story')
               .where('story.created_at', '>', moment().subtract(1, 'day').toISOString())
+              .whereNull('story.deleted_at')
               .innerJoin('user', 'story.user_id', 'user.id')
               .groupBy('story.user_id')
               .as('users')
