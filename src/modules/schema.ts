@@ -21,6 +21,7 @@ import {
 } from './story'
 import {
   reportCreate,
+  reportUpdate,
   reportsList
 } from './report'
 
@@ -48,7 +49,8 @@ export default new GraphQLSchema({
       quoteDelete,
       storyCreate,
       storyDelete,
-      reportCreate
+      reportCreate,
+      reportUpdate
     }
   })
 })
