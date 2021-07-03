@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInt, GraphQLEnumType } from 'graphql'
+import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInt, GraphQLEnumType, GraphQLInputObjectType } from 'graphql'
 import { GraphQLDateTime } from '../../shared/graphql-types'
 
 export const RolesType = new GraphQLEnumType({
@@ -41,6 +41,15 @@ export const User: GraphQLObjectType = new GraphQLObjectType({
     updatedAt: { type: GraphQLDateTime },
     deletedAt: { type: GraphQLDateTime }
   })
+})
+
+export const UserKeyFilter = new GraphQLInputObjectType({
+  name: 'UserKeyFilter',
+  fields: {
+    id: {
+      type: GraphQLID
+    }
+  }
 })
 
 export type UserType = {

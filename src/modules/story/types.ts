@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLID, GraphQLString } from 'graphql'
+import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInputObjectType } from 'graphql'
 import { GraphQLDateTime } from '../../shared/graphql-types'
 import { User, user } from '../user'
 
@@ -23,6 +23,15 @@ export const Story = new GraphQLObjectType({
     updatedAt: { type: GraphQLDateTime },
     deletedAt: { type: GraphQLDateTime }
   })
+})
+
+export const StoryKeyFilter = new GraphQLInputObjectType({
+  name: 'StoryKeyFilter',
+  fields: {
+    id: {
+      type: GraphQLID
+    }
+  }
 })
 
 export type StoryType = {

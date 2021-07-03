@@ -29,6 +29,17 @@ export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
   }
 }
 
+export class RelationConnect extends GraphQLInputObjectType {
+  constructor (name: string, type: GraphQLInputObjectType) {
+    super({
+      name,
+      fields: () => ({
+        connect: { type }
+      })
+    })
+  }
+}
+
 export const DeleteResult = new GraphQLObjectType({
   name: 'DeleteResult',
   fields: {

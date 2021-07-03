@@ -19,6 +19,9 @@ import {
   storyDelete,
   myStoriesList
 } from './story'
+import {
+  reportCreate
+} from './report'
 
 export default new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -42,7 +45,8 @@ export default new GraphQLSchema({
       quoteCreate,
       quoteDelete,
       storyCreate,
-      storyDelete
+      storyDelete,
+      reportCreate
     }
   })
 })
