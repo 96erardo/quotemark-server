@@ -20,7 +20,8 @@ import {
   myStoriesList
 } from './story'
 import {
-  reportCreate
+  reportCreate,
+  reportsList
 } from './report'
 
 export default new GraphQLSchema({
@@ -31,7 +32,8 @@ export default new GraphQLSchema({
       usersList,
       quotesList,
       storiesList,
-      myStoriesList
+      myStoriesList,
+      reportsList
     }
   }),
   mutation: new GraphQLObjectType({

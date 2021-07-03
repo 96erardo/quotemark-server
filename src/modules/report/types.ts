@@ -43,3 +43,12 @@ export const Report = new GraphQLObjectType<any, Context>({
     deletedAt: { type: GraphQLDateTime }
   })
 })
+
+export type ReportType = {
+  id: string,
+  reason: string,
+  status: string,
+  createdAt: string,
+  updatedAt: string,
+  deletedAt: string,
+}
