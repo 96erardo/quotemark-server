@@ -7,6 +7,7 @@ import { injectAuth } from './shared/middlewares/inject-auth'
 import cors from 'cors'
 
 const app = express()
+const port = process.env.PORT || 4000
 
 app.use(cors())
 
@@ -25,13 +26,13 @@ app.use('/graphql', graphqlHTTP((_, res) => {
       knex,
       user: locals.user
     },
-    graphiql: true
+    graphiql: process.env.NODE_ENV === 'development'
   }
 }))
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(4000, () => {
-    console.log('Running a GraphQL API server at http://localhost:4000/graphql')
+  app.listen(port, () => {
+    console.log(`Running a GraphQL server at port ${port}`)
   })
 }
 
