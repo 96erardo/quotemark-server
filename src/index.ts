@@ -6,6 +6,8 @@ import { authenticate } from './shared/middlewares/authenticate'
 import { injectAuth } from './shared/middlewares/inject-auth'
 import cors from 'cors'
 
+console.log('This is for CI testing purposes');
+
 const app = express()
 const port = process.env.PORT || 4000
 
