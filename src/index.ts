@@ -6,7 +6,7 @@ import { authenticate } from './shared/middlewares/authenticate'
 import { injectAuth } from './shared/middlewares/inject-auth'
 import cors from 'cors'
 
-console.log('CI with knexfile, take VII')
+console.log('CI with knexfile, take VIII')
 
 const app = express()
 const port = process.env.PORT || 4000
