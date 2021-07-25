@@ -5,7 +5,6 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc",
-    "gcp-build": "npm run build",
     "start": "node dist/index.js",
     "dev": "npm run build && node -r dotenv/config dist/index.js",
     "pretest": "npm run migrate:reset",
@@ -15,7 +14,9 @@
     "seed": "knex seed:run",
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:down",
-    "migrate:reset": "knex migrate:rollback --all && knex migrate:latest && npm run seed"
+    "migrate:reset": "knex migrate:rollback --all && knex migrate:latest && npm run seed",
+    "gcp-build": "npm run build",
+    "gcp-config": "node ./src/shared/configuration/gc-app-engine.js"
   },
   "repository": {
     "type": "git",
