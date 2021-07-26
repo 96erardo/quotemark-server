@@ -5,17 +5,18 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc",
-    "gcp-build": "npm run build",
     "start": "node dist/index.js",
-    "dev": "cross-env NODE_ENV=development npm run build && node -r dotenv/config dist/index.js",
-    "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
-    "test": "cross-env NODE_ENV=test jest --runInBand --forceExit",
+    "dev": "npm run build && node -r dotenv/config dist/index.js",
+    "pretest": "npm run migrate:reset",
+    "test": "jest --runInBand --forceExit",
     "eslint": "eslint --fix \"src/**\"",
     "knex:init": "knex init -x ts",
     "seed": "knex seed:run",
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:down",
-    "migrate:reset": "knex migrate:rollback --all && knex migrate:latest && npm run seed"
+    "migrate:reset": "knex migrate:rollback --all && knex migrate:latest && npm run seed",
+    "gcp-build": "npm run build",
+    "gcp-config": "node ./src/shared/configuration/gc-app-engine.js"
   },
   "repository": {
     "type": "git",
