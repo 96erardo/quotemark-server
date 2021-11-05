@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInt, GraphQLEnumType, GraphQLInputObjectType } from 'graphql'
+import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInt, GraphQLEnumType, GraphQLInputObjectType, GraphQLNonNull } from 'graphql'
 import { GraphQLDateTime } from '../../shared/graphql-types'
 
 export const RolesType = new GraphQLEnumType({
@@ -29,15 +29,15 @@ export const UserStoriesCount = new GraphQLObjectType({
 export const User: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
-    id: { type: GraphQLID },
-    firstName: { type: GraphQLString },
-    lastName: { type: GraphQLString },
-    email: { type: GraphQLString },
-    avatar: { type: GraphQLString },
-    role: { type: RolesType },
-    status: { type: StatusType },
-    stories: { type: UserStoriesCount },
-    createdAt: { type: GraphQLDateTime },
+    id: { type: GraphQLNonNull(GraphQLID) },
+    firstName: { type: GraphQLNonNull(GraphQLString) },
+    lastName: { type: GraphQLNonNull(GraphQLString) },
+    email: { type: GraphQLNonNull(GraphQLString) },
+    avatar: { type: GraphQLNonNull(GraphQLString) },
+    role: { type: GraphQLNonNull(RolesType) },
+    status: { type: GraphQLNonNull(StatusType) },
+    stories: { type: GraphQLNonNull(UserStoriesCount) },
+    createdAt: { type: GraphQLNonNull(GraphQLDateTime) },
     updatedAt: { type: GraphQLDateTime },
     deletedAt: { type: GraphQLDateTime }
   })

@@ -29,7 +29,7 @@ const QuoteFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
 })
 
 export const quotesList: GraphQLFieldConfig<{}, Context, ListArguments<QuoteType>> = {
-  type: QuoteListResponse,
+  type: GraphQLNonNull(QuoteListResponse),
   args: {
     filter: { type: QuoteFilter },
     first: { type: GraphQLInt },
