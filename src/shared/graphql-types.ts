@@ -43,7 +43,7 @@ export class RelationConnect extends GraphQLInputObjectType {
 export const DeleteResult = new GraphQLObjectType({
   name: 'DeleteResult',
   fields: {
-    success: { type: GraphQLBoolean },
+    success: { type: GraphQLNonNull(GraphQLBoolean) },
     message: { type: GraphQLString }
   }
 })

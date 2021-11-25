@@ -42,6 +42,10 @@ export const quotesList: GraphQLFieldConfig<{}, Context, ListArguments<QuoteType
 
       query.where('user_id', user.id)
 
+      if (user.role === 'user') {
+        query.where('deleted_at', null);
+      }
+
       if (filter) { createFilter(query, filter) }
 
       if (first) { query.limit(first) }
