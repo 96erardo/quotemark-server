@@ -1,16 +1,16 @@
-import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInputObjectType } from 'graphql'
+import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInputObjectType, GraphQLNonNull } from 'graphql'
 import { GraphQLDateTime } from '../../shared/graphql-types'
 import { User, user } from '../user'
 
 export const Quote = new GraphQLObjectType({
   name: 'Quote',
   fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    content: { type: GraphQLString },
-    link: { type: GraphQLString },
+    id: { type: GraphQLNonNull(GraphQLID), },
+    name: { type: GraphQLNonNull(GraphQLString) },
+    content: { type: GraphQLNonNull(GraphQLString) },
+    link: { type: GraphQLNonNull(GraphQLString) },
     user: {
-      type: User,
+      type: GraphQLNonNull(User),
       resolve: async (data, _, context, info) => {
         if (user.resolve) {
           return await user.resolve({}, { id: data.userId }, context, info)
@@ -19,7 +19,7 @@ export const Quote = new GraphQLObjectType({
         return null
       }
     },
-    createdAt: { type: GraphQLDateTime },
+    createdAt: { type: GraphQLNonNull(GraphQLDateTime) },
     updatedAt: { type: GraphQLDateTime },
     deletedAt: { type: GraphQLDateTime }
   })

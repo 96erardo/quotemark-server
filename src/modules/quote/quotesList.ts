@@ -29,7 +29,7 @@ const QuoteFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
 })
 
 export const quotesList: GraphQLFieldConfig<{}, Context, ListArguments<QuoteType>> = {
-  type: QuoteListResponse,
+  type: GraphQLNonNull(QuoteListResponse),
   args: {
     filter: { type: QuoteFilter },
     first: { type: GraphQLInt },
@@ -41,6 +41,10 @@ export const quotesList: GraphQLFieldConfig<{}, Context, ListArguments<QuoteType
       const query = knex('quote')
 
       query.where('user_id', user.id)
+
+      if (user.role === 'user') {
+        query.where('deleted_at', null);
+      }
 
       if (filter) { createFilter(query, filter) }
 

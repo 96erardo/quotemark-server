@@ -29,10 +29,18 @@ export const authenticate: RequestHandler = async (req, res, next) => {
       personFields: 'names,birthdays,emailAddresses,photos,metadata',
       resourceName: 'people/me'
     })
+    
   } catch (e) {
-    console.log('Authentication error', e.message)
-
-    return res.status(401).send('Not authorized')
+    return res.json({
+      errors: [
+        {
+          message: e.message,
+          extensions: {
+            code: 'UNAUTHENTICATED'
+          }
+        }
+      ]
+    })
   }
 
   const { data } = response

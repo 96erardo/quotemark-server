@@ -35,7 +35,7 @@ export const UserFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
 })
 
 export const usersList: GraphQLFieldConfig<{}, Context, ListArguments<UserType>> = {
-  type: UserListResponse,
+  type: GraphQLNonNull(UserListResponse),
   args: {
     filter: { type: UserFilter },
     first: { type: GraphQLInt },

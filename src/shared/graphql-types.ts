@@ -8,7 +8,7 @@ export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
       name,
       fields: {
         count: {
-          type: GraphQLInt,
+          type: GraphQLNonNull(GraphQLInt),
           resolve: async ({ query }) => {
             const [{ count }] = await query
               .clone()
@@ -21,7 +21,7 @@ export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
           }
         },
         items: {
-          type: new GraphQLList(type),
+          type: GraphQLNonNull(new GraphQLList(GraphQLNonNull(type))),
           resolve: async ({ query }) => await query.clone().select('*')
         }
       }
@@ -43,7 +43,7 @@ export class RelationConnect extends GraphQLInputObjectType {
 export const DeleteResult = new GraphQLObjectType({
   name: 'DeleteResult',
   fields: {
-    success: { type: GraphQLBoolean },
+    success: { type: GraphQLNonNull(GraphQLBoolean) },
     message: { type: GraphQLString }
   }
 })
