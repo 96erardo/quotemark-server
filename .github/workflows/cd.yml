@@ -15,6 +15,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script_stop: true
           script: |
+            exec bash
             whoami
             echo $NODE_ENV > env.txt
             echo $SHELL > shell.txt
