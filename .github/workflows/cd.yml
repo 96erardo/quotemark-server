@@ -16,4 +16,6 @@ jobs:
           script: |
             cd quotemark-server
             git pull origin
+            npm install
+            npm run build
             npm run migrate:latest
