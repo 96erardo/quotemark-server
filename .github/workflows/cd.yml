@@ -13,7 +13,10 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          script_stop: true
           script: |
+            whoami
+            echo $NODE_ENV
             cd quotemark-server
             ssh -T git@github.com
             git pull origin
