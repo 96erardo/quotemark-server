@@ -15,6 +15,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd quotemark-server
+            ssh -T git@github.com
             git pull origin
             npm install
             npm run build
