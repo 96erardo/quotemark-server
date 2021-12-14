@@ -18,8 +18,7 @@ jobs:
             whoami
             echo $NODE_ENV
             cd quotemark-server
-            ssh -T git@github.com
-            git pull origin
+            sudo su -c 'git pull origin'
             npm install
             npm run build
             npm run migrate:latest
