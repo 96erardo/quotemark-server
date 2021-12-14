@@ -7,18 +7,17 @@ jobs:
   deploy:
     runs-on: ubuntu-20.04
     steps:
-      - uses: appleboy/ssh-action@v0.1.4
+      - uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.SSH_HOST }}
-          # passphrase: ${{ secrets.SSH_PASSPHRASE }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script_stop: true
-          script: |
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          privateKey: ${{ secrets.SSH_KEY }}
+          command: |
             whoami
             echo $NODE_ENV
             cd quotemark-server
-            sudo su -c 'git pull origin'
+            git pull origin
             npm install
             npm run build
             npm run migrate:latest
