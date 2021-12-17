@@ -23,7 +23,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: NODE_ENV,PORT,DB_CLIENT,DB_HOST,DB_USER,DB_PASSWORD,DB_NAME,GOOGLE_AUTH_CLIENT_ID,GOOGLE_AUTH_CLIENT_SECRET
+          # envs: NODE_ENV,PORT,DB_CLIENT,DB_HOST,DB_USER,DB_PASSWORD,DB_NAME,GOOGLE_AUTH_CLIENT_ID,GOOGLE_AUTH_CLIENT_SECRET
           script_stop: true
           script: |
             cd quotemark-server
