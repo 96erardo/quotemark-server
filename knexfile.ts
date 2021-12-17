@@ -2,8 +2,6 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-console.log('client', process.env.DB_CLIENT);
-
 module.exports = {
   [process.env.NODE_ENV as string]: {
     client: process.env.DB_CLIENT,
