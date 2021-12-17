@@ -27,7 +27,7 @@ jobs:
           script_stop: true
           script: |
             cd quotemark-server
-            echo $DB_CLIENT > env.txt
+            echo $DB_CLIENT > variables.txt
             git pull origin
             npm install
             npm run build
