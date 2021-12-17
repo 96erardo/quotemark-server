@@ -21,3 +21,4 @@ jobs:
             npm install
             npm run build
             npm run migrate:latest
+            pm2 restart app
