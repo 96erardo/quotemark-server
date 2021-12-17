@@ -8,11 +8,22 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: appleboy/ssh-action@v0.1.4
+        env:
+          NODE_ENV: "production"
+          PORT: ${{ secrets.PORT }}
+          DB_CLIENT: ${{ secrets.DB_CLIENT }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          GOOGLE_AUTH_CLIENT_ID: ${{ secrets.GOOGLE_AUTH_CLIENT_ID }}
+          GOOGLE_AUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_AUTH_CLIENT_SECRET }}
         with:
           host: ${{ secrets.SSH_HOST }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          envs: NODE_ENV,PORT,DB_CLIENT,DB_HOST,DB_USER,DB_PASSWORD,DB_NAME,GOOGLE_AUTH_CLIENT_ID,GOOGLE_AUTH_CLIENT_SECRET
           script_stop: true
           script: |
             cd quotemark-server
