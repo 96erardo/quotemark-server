@@ -11,7 +11,6 @@ jobs:
         uses: appleboy/ssh-action@v0.1.4
         env:
           NODE_ENV: production
-          PORT: ${{ secrets.PORT }}
           DB_CLIENT: ${{ secrets.DB_CLIENT }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_USER: ${{ secrets.DB_USER }}
@@ -27,7 +26,6 @@ jobs:
           script_stop: true
           script: |
             export NODE_ENV=production
-            export PORT:=${{ secrets.PORT }}
             export DB_CLIENT:=${{ secrets.DB_CLIENT }}
             export DB_HOST:=${{ secrets.DB_HOST }}
             export DB_USER:=${{ secrets.DB_USER }}
