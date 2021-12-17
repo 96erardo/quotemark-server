@@ -7,8 +7,18 @@ jobs:
   deploy:
     runs-on: ubuntu-20.04
     steps:
-      - name: SHH server, build app & deploy
+      - name: ssh, build & deploy
         uses: appleboy/ssh-action@v0.1.4
+        env:
+          NODE_ENV: production
+          PORT: ${{ secrets.PORT }}
+          DB_CLIENT: ${{ secrets.DB_CLIENT }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          GOOGLE_AUTH_CLIENT_ID: ${{ secrets.GOOGLE_AUTH_CLIENT_ID }}
+          GOOGLE_AUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_AUTH_CLIENT_SECRET }}
         with:
           host: ${{ secrets.SSH_HOST }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
@@ -17,14 +27,14 @@ jobs:
           script_stop: true
           script: |
             export NODE_ENV=production
-            export PORT=${{ secrets.PORT }}
-            export DB_CLIENT=${{ secrets.DB_CLIENT }}
-            export DB_HOST=${{ secrets.DB_HOST }}
-            export DB_USER=${{ secrets.DB_USER }}
-            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            export DB_NAME=${{ secrets.DB_NAME }}
-            export GOOGLE_AUTH_CLIENT_ID=${{ secrets.GOOGLE_AUTH_CLIENT_ID }}
-            export GOOGLE_AUTH_CLIENT_SECRET =${{ secrets.GOOGLE_AUTH_CLIENT_SECRET }}
+            export PORT:=${{ secrets.PORT }}
+            export DB_CLIENT:=${{ secrets.DB_CLIENT }}
+            export DB_HOST:=${{ secrets.DB_HOST }}
+            export DB_USER:=${{ secrets.DB_USER }}
+            export DB_PASSWORD:=${{ secrets.DB_PASSWORD }}
+            export DB_NAME:=${{ secrets.DB_NAME }}
+            export GOOGLE_AUTH_CLIENT_ID:=${{ secrets.GOOGLE_AUTH_CLIENT_ID }}
+            export GOOGLE_AUTH_CLIENT_SECRET:=${{ secrets.GOOGLE_AUTH_CLIENT_SECRET }}
             cd quotemark-server
             echo $DB_CLIENT > variables.txt
             git pull origin
