@@ -11,6 +11,8 @@ const port = process.env.PORT || 4000
 
 app.use(cors())
 
+app.get('/', (_, res) => res.send('<h1>Quotemark is online</h1>'))
+
 if (process.env.NODE_ENV !== 'production') {
   app.post('/graphql', injectAuth)
 }
