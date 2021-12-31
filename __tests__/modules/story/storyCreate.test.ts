@@ -53,6 +53,7 @@ describe('storyCreate as an active user', () => {
             storyCreate (quote: $quote) {
               id
               color
+              typography
               content
               link
               user {
@@ -74,6 +75,7 @@ describe('storyCreate as an active user', () => {
 
     expect(res.body.data.storyCreate).not.toBeNull();
     expect(res.body.data.storyCreate).toHaveProperty('color', '#e10098');
+    expect(res.body.data.storyCreate).toHaveProperty('typography', 'Arial');
     expect(res.body.data.storyCreate).toHaveProperty('content', quotes[0].content);
     expect(res.body.data.storyCreate).toHaveProperty('link', quotes[0].link);
     expect(res.body.data.storyCreate).toHaveProperty('user.id', user.id);
@@ -83,10 +85,11 @@ describe('storyCreate as an active user', () => {
     res = await req.post('/graphql')
       .send({
         query: `
-          mutation ($quote: StoryQuoteRelationInput!, $color: String) {
-            storyCreate (quote: $quote, color: $color) {
+          mutation ($quote: StoryQuoteRelationInput!, $color: String, $typography: Typography) {
+            storyCreate (quote: $quote, color: $color, typography: $typography) {
               id
               color
+              typography
               content
               link
               user {
@@ -101,7 +104,8 @@ describe('storyCreate as an active user', () => {
               id: quotes[1].id
             }
           },
-          color: '#fff'
+          color: '#fff',
+          typography: 'Barlow'
         }
       });
 
@@ -109,6 +113,7 @@ describe('storyCreate as an active user', () => {
 
     expect(res.body.data.storyCreate).not.toBeNull();
     expect(res.body.data.storyCreate).toHaveProperty('color', '#fff');
+    expect(res.body.data.storyCreate).toHaveProperty('typography', 'Barlow');
     expect(res.body.data.storyCreate).toHaveProperty('content', quotes[1].content);
     expect(res.body.data.storyCreate).toHaveProperty('link', quotes[1].link);
     expect(res.body.data.storyCreate).toHaveProperty('user.id', user.id);
@@ -118,10 +123,11 @@ describe('storyCreate as an active user', () => {
     res = await req.post('/graphql')
       .send({
         query: `
-          mutation ($quote: StoryQuoteRelationInput!, $color: String) {
-            storyCreate (quote: $quote, color: $color) {
+          mutation ($quote: StoryQuoteRelationInput!, $color: String, $typography: Typography) {
+            storyCreate (quote: $quote, color: $color, typography: $typography) {
               id
               color
+              typography
               content
               link
               user {
@@ -136,7 +142,8 @@ describe('storyCreate as an active user', () => {
               id: quotes[2].id
             }
           },
-          color: '#000'
+          color: '#000',
+          typography: 'Poppins'
         }
       });
 
@@ -144,6 +151,7 @@ describe('storyCreate as an active user', () => {
 
     expect(res.body.data.storyCreate).not.toBeNull();
     expect(res.body.data.storyCreate).toHaveProperty('color', '#000');
+    expect(res.body.data.storyCreate).toHaveProperty('typography', 'Poppins');
     expect(res.body.data.storyCreate).toHaveProperty('content', quotes[2].content);
     expect(res.body.data.storyCreate).toHaveProperty('link', quotes[2].link);
     expect(res.body.data.storyCreate).toHaveProperty('user.id', user.id);
@@ -203,6 +211,40 @@ describe('storyCreate as an active user', () => {
     const [{ message }] = res.body.errors;
     
     expect(message).toMatch(/The quote you are trying to link does not exist/);
+  })
+
+  it('Should fail when given a bad typography', async () => {
+    let res = await req.post('/graphql')
+      .send({
+        query: `
+          mutation ($quote: StoryQuoteRelationInput!, $typography: Typography) {
+            storyCreate (quote: $quote, typography: $typography) {
+              id
+              color
+              typography
+              content
+              link
+              user {
+                id
+              }
+            }
+          }
+        `,
+        variables: {
+          quote: {
+            connect: {
+              id: quotes[0].id
+            }
+          },
+          typography: 'wrong value for typography',
+        }
+      });
+
+    expect(res.body).toHaveProperty(['errors', '0', 'message']);
+
+    const [{ message }] = res.body.errors;
+    
+    expect(message).toMatch(/Variable "\$typography" got invalid value/);
   })
 })
 

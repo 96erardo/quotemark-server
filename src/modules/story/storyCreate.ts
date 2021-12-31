@@ -33,7 +33,7 @@ export const storyCreate: GraphQLFieldConfig<{}, Context> = {
   resolve: combine(
     isActive,
     async (_, args, { knex, user }) => {
-      const { quote: { connect }, color } = args
+      const { quote: { connect }, color, typography } = args
 
       const [quote] = await knex('quote')
         .select('*')
@@ -50,6 +50,7 @@ export const storyCreate: GraphQLFieldConfig<{}, Context> = {
         .insert({
           id,
           color,
+          typography,
           content: quote.content,
           link: quote.link,
           quote_id: connect.id,

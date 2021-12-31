@@ -10,7 +10,7 @@ import { isActive } from '../../shared/middlewares/isActive'
 import { combine } from '../../shared/utils'
 
 export const quoteUpdate: GraphQLFieldConfig<{}, Context> = {
-  type: GraphQLNonNull(Quote),
+  type: Quote,
   args: {
     id: { type: new GraphQLNonNull(GraphQLID) },
     name: { type: new GraphQLNonNull(GraphQLString) }
