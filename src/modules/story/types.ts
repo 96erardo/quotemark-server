@@ -1,4 +1,10 @@
-import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInputObjectType } from 'graphql'
+import { 
+  GraphQLObjectType, 
+  GraphQLID, 
+  GraphQLString, 
+  GraphQLInputObjectType,
+  GraphQLEnumType
+} from 'graphql'
 import { GraphQLDateTime } from '../../shared/graphql-types'
 import { User, user } from '../user'
 
@@ -7,6 +13,7 @@ export const Story = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     color: { type: GraphQLString },
+    typography: { type: Typography },
     content: { type: GraphQLString },
     link: { type: GraphQLString },
     user: {
@@ -25,6 +32,15 @@ export const Story = new GraphQLObjectType({
   })
 })
 
+export const Typography = new GraphQLEnumType({
+  name: 'Typography',
+  values: {
+    Arial: { value: 'Arial' },
+    Poppins: { value: 'Poppins' },
+    Barlow: { value: 'Barlow' },
+  }
+})
+
 export const StoryKeyFilter = new GraphQLInputObjectType({
   name: 'StoryKeyFilter',
   fields: {
@@ -37,6 +53,7 @@ export const StoryKeyFilter = new GraphQLInputObjectType({
 export type StoryType = {
   id: string,
   color: string,
+  typography: string,
   content: string,
   link: string,
   createdAt: string,

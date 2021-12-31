@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLNonNull, GraphQLString } from 'graphql'
 import { Context } from '../../shared/types'
 import { QuoteKeyFilter } from '../quote/types'
-import { Story } from './types'
+import { Story, Typography } from './types'
 import { combine } from '../../shared/utils'
 import { isActive } from '../../shared/middlewares/isActive'
 import { v4 as uuid } from 'uuid'
@@ -24,6 +24,10 @@ export const storyCreate: GraphQLFieldConfig<{}, Context> = {
     color: {
       type: GraphQLString,
       defaultValue: '#e10098'
+    },
+    typography: {
+      type: Typography,
+      defaultValue: 'Arial',
     }
   },
   resolve: combine(
