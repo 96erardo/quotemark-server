@@ -16,7 +16,7 @@ const StoryQuoteRelationInput = new GraphQLInputObjectType({
 })
 
 export const storyCreate: GraphQLFieldConfig<{}, Context> = {
-  type: Story,
+  type: GraphQLNonNull(Story),
   args: {
     quote: {
       type: new GraphQLNonNull(StoryQuoteRelationInput)
