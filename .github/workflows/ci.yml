@@ -22,6 +22,8 @@ jobs:
     services:
       database:
         image: mysql:8.0.27
+        ports:
+          - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: very_secret_password
           MYSQL_DATABASE: quotemark_test
