@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-20.04
     services:
       database:
-        image: mysql:8.0.27
+        image: mysql:5.7.36
         ports:
           - 3306:3306
         env:
