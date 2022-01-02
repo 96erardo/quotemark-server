@@ -3,7 +3,7 @@ import {
   GraphQLList,
   GraphQLNonNull,
   GraphQLInt,
-  GraphQLFieldConfig
+  GraphQLFieldConfig,
 } from 'graphql'
 import { IDPredicate, StringPredicate, List } from '../../shared/graphql-types'
 import { Story, StoryType } from './types'
@@ -27,7 +27,7 @@ const StoryFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
 })
 
 export const myStoriesList: GraphQLFieldConfig<{}, Context, ListArguments<StoryType>> = {
-  type: StoryListResponse,
+  type: GraphQLNonNull(StoryListResponse),
   args: {
     filter: { type: StoryFilter },
     first: { type: GraphQLInt },
@@ -47,6 +47,8 @@ export const myStoriesList: GraphQLFieldConfig<{}, Context, ListArguments<StoryT
       if (first) { query.limit(first) }
 
       if (skip) { query.offset(skip) }
+
+      query.orderBy('created_at', 'desc')
 
       return { query }
     }
