@@ -2,7 +2,8 @@
 import { RequestHandler } from 'express'
 import { google, people_v1 } from 'googleapis'
 import { GaxiosResponse } from 'gaxios'
-import knex from '../configuration/knex'
+import knex from '../configuration/knex';
+import { ErrorCodes } from '../types';
 
 /**
  * Global middleware that handles user authentication
@@ -31,30 +32,47 @@ export const authenticate: RequestHandler = async (req, res, next) => {
     })
     
   } catch (e) {
-    return res.json({
+    return res.status(401).json({
       errors: [
         {
           message: e.message,
           extensions: {
-            code: 'UNAUTHENTICATED'
+            code: ErrorCodes.Authentication,
           }
         }
       ]
     })
   }
 
-  const { data } = response
+  const { data } = response;
 
   const [profile] = data.metadata?.sources || []
   const [names] = data.names || []
   const [photo] = data.photos || []
   const [email] = data.emailAddresses || []
+  let user = null;
 
-  const [user] = await knex
-    .select()
-    .from('user')
-    .where({ id: profile.id })
-    .limit(1)
+  try {
+    const users = await knex
+      .select()
+      .from('user')
+      .where({ id: profile.id })
+      .limit(1);
+
+    user = users[0];
+
+  } catch (e) {
+    return res.status(500).json({
+      errors: [
+        {
+          message: e.message,
+          extensions: {
+            code: ErrorCodes.ServerException
+          }
+        }
+      ]
+    })
+  }
 
   res.locals.id = profile.id
 
@@ -64,22 +82,50 @@ export const authenticate: RequestHandler = async (req, res, next) => {
     return next()
   }
 
-  await knex('user').insert({
-    id: profile.id,
-    first_name: names.givenName,
-    last_name: names.familyName,
-    email: email.value,
-    avatar: photo.url
-  })
-
-  const [created] = await knex.select()
-    .from('user')
-    .where({
-      id: profile.id
+  try {
+    await knex('user').insert({
+      id: profile.id,
+      first_name: names.givenName,
+      last_name: names.familyName,
+      email: email.value,
+      avatar: photo.url
     })
-    .limit(1)
+    
+  } catch (e) {
+    return res.status(500).json({
+      errors: [
+        {
+          message: e.message,
+          extensions: {
+            code: ErrorCodes.ServerException,
+          }
+        }
+      ]
+    })
+  }
 
-  res.locals.user = created
+  try {
+    const [created] = await knex.select()
+      .from('user')
+      .where({
+        id: profile.id
+      })
+      .limit(1)
 
-  next()
+      res.locals.user = created
+    
+      next()
+
+  } catch (e) {
+    return res.status(500).json({
+      errors: [
+        {
+          message: e.message,
+          extensions: {
+            code: ErrorCodes.ServerException
+          }
+        }
+      ]
+    })
+  }
 }

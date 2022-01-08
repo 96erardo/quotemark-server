@@ -11,9 +11,9 @@ const port = process.env.PORT || 4000
 
 app.use(cors())
 
-if (process.env.NODE_ENV !== 'production') {
-  app.post('/graphql', injectAuth)
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   app.post('/graphql', injectAuth)
+// }
 
 app.post('/graphql', authenticate)
 

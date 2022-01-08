@@ -1,6 +1,13 @@
 /* eslint-disable camelcase, no-unused-vars */
 import Knex from 'knex'
 
+export enum ErrorCodes {
+  ServerException,
+  Authentication,
+  NonActive,
+  NonAdmin,
+}
+
 export type Context = {
   knex: Knex,
   user: {
