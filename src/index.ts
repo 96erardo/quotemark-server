@@ -15,6 +15,8 @@ if (process.env.NODE_ENV === 'test') {
   app.post('/graphql', injectAuth)
 }
 
+app.get('/', (_, res) => res.send('<h1>Quotemark is online</h1>'))
+
 app.post('/graphql', authenticate)
 
 app.use('/graphql', graphqlHTTP((_, res) => {

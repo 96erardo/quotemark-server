@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLNonNull, GraphQLString } from 'graphql'
 import { Context } from '../../shared/types'
 import { QuoteKeyFilter } from '../quote/types'
-import { Story } from './types'
+import { Story, Typography } from './types'
 import { combine } from '../../shared/utils'
 import { isActive } from '../../shared/middlewares/isActive'
 import { v4 as uuid } from 'uuid'
@@ -16,7 +16,7 @@ const StoryQuoteRelationInput = new GraphQLInputObjectType({
 })
 
 export const storyCreate: GraphQLFieldConfig<{}, Context> = {
-  type: Story,
+  type: GraphQLNonNull(Story),
   args: {
     quote: {
       type: new GraphQLNonNull(StoryQuoteRelationInput)
@@ -24,12 +24,16 @@ export const storyCreate: GraphQLFieldConfig<{}, Context> = {
     color: {
       type: GraphQLString,
       defaultValue: '#e10098'
+    },
+    typography: {
+      type: Typography,
+      defaultValue: 'Arial',
     }
   },
   resolve: combine(
     isActive,
     async (_, args, { knex, user }) => {
-      const { quote: { connect }, color } = args
+      const { quote: { connect }, color, typography } = args
 
       const [quote] = await knex('quote')
         .select('*')
@@ -46,6 +50,7 @@ export const storyCreate: GraphQLFieldConfig<{}, Context> = {
         .insert({
           id,
           color,
+          typography,
           content: quote.content,
           link: quote.link,
           quote_id: connect.id,
