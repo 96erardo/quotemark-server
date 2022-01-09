@@ -62,7 +62,7 @@ export const authenticate: RequestHandler = async (req, res, next) => {
     user = users[0];
 
   } catch (e) {
-    return res.status(500).json({
+    return res.status(200).json({
       errors: [
         {
           message: e.message,
