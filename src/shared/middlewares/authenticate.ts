@@ -32,7 +32,7 @@ export const authenticate: RequestHandler = async (req, res, next) => {
     })
     
   } catch (e) {
-    return res.status(401).json({
+    return res.status(200).json({
       errors: [
         {
           message: e.message,
