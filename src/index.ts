@@ -11,7 +11,7 @@ const port = process.env.PORT || 4000
 
 app.use(cors())
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'test') {
   app.post('/graphql', injectAuth)
 }
 
@@ -26,7 +26,7 @@ app.use('/graphql', graphqlHTTP((_, res) => {
       knex,
       user: locals.user
     },
-    graphiql: process.env.NODE_ENV === 'development'
+    graphiql: process.env.NODE_ENV === 'development',
   }
 }))
 

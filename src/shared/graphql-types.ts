@@ -1,6 +1,16 @@
-import { GraphQLID, GraphQLInt, GraphQLList, GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLScalarType, GraphQLBoolean } from 'graphql'
+import { 
+  GraphQLID, 
+  GraphQLInt, 
+  GraphQLList, 
+  GraphQLInputObjectType, 
+  GraphQLNonNull, 
+  GraphQLObjectType, 
+  GraphQLString, 
+  GraphQLScalarType, 
+  GraphQLBoolean
+} from 'graphql'
 import { QueryBuilder } from 'knex'
-import { Context } from './types'
+import { Context, ServerError } from './types'
 
 export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
   constructor (name: string, type: GraphQLObjectType) {
@@ -10,19 +20,31 @@ export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
         count: {
           type: GraphQLNonNull(GraphQLInt),
           resolve: async ({ query }) => {
-            const [{ count }] = await query
-              .clone()
-              .clear('select')
-              .clear('limit')
-              .clear('offset')
-              .count({ count: 'id' })
+            try {
+              const [{ count }] = await query
+                .clone()
+                .clear('select')
+                .clear('limit')
+                .clear('offset')
+                .count({ count: 'id' })
+  
+              return count
 
-            return count
+            } catch (e) {
+              throw new ServerError(e.message)
+            }
           }
         },
         items: {
           type: GraphQLNonNull(new GraphQLList(GraphQLNonNull(type))),
-          resolve: async ({ query }) => await query.clone().select('*')
+          resolve: async ({ query }) => {
+            try {
+              return await query.clone().select('*')
+              
+            } catch (e) {
+              throw new ServerError(e.message);
+            }
+          }
         }
       }
     })

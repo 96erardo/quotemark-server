@@ -1,5 +1,29 @@
 /* eslint-disable camelcase, no-unused-vars */
 import Knex from 'knex'
+import { GraphQLError } from 'graphql/error';
+
+export enum ErrorCodes {
+  ServerException,
+  Authentication,
+  NonActive,
+  NonAdmin,
+}
+
+export class ServerError extends GraphQLError {
+  constructor (message: string) {
+    super(
+      message,
+      undefined, // nodes
+      undefined, // stack
+      undefined, // source
+      undefined, // positions
+      undefined, // originalError
+      {
+        code: ErrorCodes.ServerException
+      }
+    )
+  }
+}
 
 export type Context = {
   knex: Knex,
