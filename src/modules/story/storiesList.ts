@@ -12,7 +12,10 @@ const UsersStoryListResponse = new GraphQLObjectType<{ first: number, skip: numb
     count: {
       type: GraphQLInt,
       resolve: async (_, args, { knex }) => {
-        const result = await knex('story').countDistinct('user_id')
+        const result = await knex('story')
+          .countDistinct('user_id')
+          .where('story.created_at', '>', moment().subtract(1, 'day').toISOString())
+          .whereNull('deleted_at')
 
         const [{ 'count(distinct `userId`)': count }] = result
 
