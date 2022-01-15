@@ -13,7 +13,7 @@ app.use(cors())
 
 app.get('/', (_, res) => res.send('<h1>Quotemark is online</h1>'))
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
   app.post('/graphql', injectAuth)
 }
 

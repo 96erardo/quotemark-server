@@ -12,24 +12,24 @@ import { Context, ListArguments } from '../../shared/types'
 import { isActive } from '../../shared/middlewares/isActive'
 import moment from 'moment'
 
-export const StoryListResponse = new List('StoryListResponse', Story)
+export const MyStoryListResponse = new List('MyStoryListResponse', Story)
 
-const StoryFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
-  name: 'StoryFilter',
+const MyStoryFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
+  name: 'MyStoryFilter',
   fields: () => ({
     id: { type: IDPredicate },
     color: { type: StringPredicate },
     content: { type: StringPredicate },
     link: { type: StringPredicate },
-    OR: { type: new GraphQLList(new GraphQLNonNull(StoryFilter)) },
-    AND: { type: new GraphQLList(new GraphQLNonNull(StoryFilter)) }
+    OR: { type: new GraphQLList(new GraphQLNonNull(MyStoryFilter)) },
+    AND: { type: new GraphQLList(new GraphQLNonNull(MyStoryFilter)) }
   })
 })
 
 export const myStoriesList: GraphQLFieldConfig<{}, Context, ListArguments<StoryType>> = {
-  type: GraphQLNonNull(StoryListResponse),
+  type: GraphQLNonNull(MyStoryListResponse),
   args: {
-    filter: { type: StoryFilter },
+    filter: { type: MyStoryFilter },
     first: { type: GraphQLInt },
     skip: { type: GraphQLInt }
   },

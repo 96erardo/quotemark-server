@@ -1,27 +1,19 @@
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { Server } from 'http';
+import { user } from '../../shared/data';
 import knex from '../../shared/knex';
 import app from '../../../src/index';
 import moment from 'moment';
 
 let server: Server;
 let req: request.SuperAgentTest;
-let user: { id: string };
 
 beforeAll((done) => {
   server = app.listen(4000, () => {
     req = request.agent(server);
 
-    knex('user')
-      .select('*')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
-      .limit(1)
-      .then(result => {
-        user = result[0];
-        
-        done && done();
-      })
+    done && done();
   });
 });
 
@@ -96,7 +88,7 @@ describe('myStoriesList as an active user', () => {
     const res = await req.post('/graphql')
       .send({
         query: `
-          query ($filter: StoryFilter) {
+          query ($filter: MyStoryFilter) {
             myStoriesList (filter: $filter) {
               count
               items {

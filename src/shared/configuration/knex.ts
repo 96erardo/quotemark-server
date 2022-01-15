@@ -1,7 +1,7 @@
-import knext from 'knex'
+import knex from 'knex'
 import { convertToCamel } from '../utils'
 
-export default knext({
+export default knex({
   client: process.env.DB_CLIENT,
   debug: process.env.NODE_ENV === 'development',
   connection: {

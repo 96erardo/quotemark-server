@@ -7,7 +7,8 @@ import {
   GraphQLNonNull,
 } from 'graphql'
 import { GraphQLDateTime } from '../../shared/graphql-types'
-import { User, user } from '../user'
+import knex from '../../shared/configuration/knex';
+import { User } from '../user'
 
 export const Story = new GraphQLObjectType({
   name: 'Story',
@@ -20,11 +21,11 @@ export const Story = new GraphQLObjectType({
     user: {
       type: GraphQLNonNull(User),
       resolve: async (data, _, context, info) => {
-        if (user.resolve) {
-          return await user.resolve({}, { id: data.userId }, context, info)
-        }
+        const [user] = await knex('user')
+          .where('id', data.userId)
+          .limit(1);
 
-        return null
+        return user;
       }
     },
     createdAt: { type: GraphQLNonNull(GraphQLDateTime) },

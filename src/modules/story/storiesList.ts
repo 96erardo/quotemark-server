@@ -1,82 +1,58 @@
-import { GraphQLFieldConfig, GraphQLInt, GraphQLList, GraphQLObjectType } from 'graphql'
+import { 
+  GraphQLFieldConfig, 
+  GraphQLInputObjectType, 
+  GraphQLInt, 
+  GraphQLList, 
+  GraphQLNonNull 
+} from 'graphql'
+import { 
+  List, 
+  IDPredicate, 
+  StringPredicate, 
+} from '../../shared/graphql-types';
 import { Context } from '../../shared/types'
-import { combine } from '../../shared/utils'
+import { combine, createFilter } from '../../shared/utils'
 import { isActive } from '../../shared/middlewares/isActive'
-import { User } from '../user'
+import { Story } from './types';
 import moment from 'moment'
-import Knex from 'knex'
 
-const UsersStoryListResponse = new GraphQLObjectType<{ first: number, skip: number }, Context>({
-  name: 'UsersStoryListResponse',
+const StoryListResponse = new List('StoryListResponse', Story);
+
+const StoryFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
+  name: 'StoryFilter',
   fields: () => ({
-    count: {
-      type: GraphQLInt,
-      resolve: async (_, args, { knex }) => {
-        const result = await knex('story')
-          .countDistinct('user_id')
-          .where('story.created_at', '>', moment().subtract(1, 'day').toISOString())
-          .whereNull('deleted_at')
-
-        const [{ 'count(distinct `userId`)': count }] = result
-
-        return count
-      }
-    },
-    items: {
-      type: GraphQLList(User),
-      resolve: async ({ first, skip }, args, { knex }) => {
-        const query = knex
-          .select('*')
-          .from(function (this: Knex) {
-            this.select(
-              'user.id',
-              'user.first_name',
-              'user.last_name',
-              'user.avatar'
-            )
-              .count('story.id', { as: 'count' })
-              .from('story')
-              .where('story.created_at', '>', moment().subtract(1, 'day').toISOString())
-              .whereNull('story.deleted_at')
-              .innerJoin('user', 'story.user_id', 'user.id')
-              .groupBy('story.user_id')
-              .as('users')
-          })
-
-        if (first) {
-          query.limit(first)
-        }
-
-        if (skip) {
-          query.offset(skip)
-        };
-
-        const users = await query
-
-        return users.map(user => ({
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatar: user.avatar,
-          stories: {
-            count: user.count
-          }
-        }))
-      }
-    }
+    id: { type: IDPredicate },
+    name: { type: StringPredicate },
+    content: { type: StringPredicate },
+    link: { type: StringPredicate },
+    OR: { type: new GraphQLList(new GraphQLNonNull(StoryFilter)) },
+    AND: { type: new GraphQLList(new GraphQLNonNull(StoryFilter)) }
   })
 })
 
 export const storiesList: GraphQLFieldConfig<{}, Context> = {
-  type: UsersStoryListResponse,
+  type: GraphQLNonNull(StoryListResponse),
   args: {
+    filter: { type: StoryFilter },
     first: { type: GraphQLInt },
     skip: { type: GraphQLInt }
   },
   resolve: combine(
     isActive,
-    async (_, args, { knex }) => {
-      return args
+    async (_, { filter, first, skip }, { knex, user }) => {
+      const query = knex('story');
+
+      query.whereNot('user_id', user.id);
+      query.where('created_at', '>', moment().subtract(1, 'day').toISOString());
+      query.whereNull('deleted_at');
+
+      if (filter) { createFilter(query, filter) }
+
+      if (first) { query.limit(first) }
+
+      if (skip) { query.offset(skip) }
+
+      return { query }
     }
   )
 }

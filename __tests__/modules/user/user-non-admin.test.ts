@@ -1,12 +1,12 @@
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import request from 'supertest';
 import { Server } from 'http';
+import { user } from '../../shared/data';
 import knex from '../../shared/knex';
 import app from '../../../src/index';
 
 let server: Server;
 let req: request.SuperAgentTest;
-let user: { id: string };
 
 beforeAll((done) => {
   server = app.listen(4000, () => {
@@ -17,15 +17,8 @@ beforeAll((done) => {
      * and fetching him
      */
     knex('user')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
+      .where('id', user.id)
       .update({ role: 'user' })
-      .then(() => 
-        knex('user')
-          .select('*')
-          .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
-          .limit(1)
-      )
-      .then(result => user = result[0])
       .then(() => done && done());  
   });
 });
@@ -37,7 +30,7 @@ afterAll((done) => {
      * an admin
      */
     knex('user')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
+      .where('id', user.id)
       .update({ role: 'admin' })
       .then(() => done && done())
   });

@@ -1,26 +1,18 @@
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { Server } from 'http';
+import { user } from '../../shared/data';
 import knex from '../../shared/knex';
 import app from '../../../src/index';
 
 let server: Server;
 let req: request.SuperAgentTest;
-let user: { id: string };
 
 beforeAll((done) => {
   server = app.listen(4000, () => {
     req = request.agent(server);
 
-    knex('user')
-      .select('*')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
-      .limit(1)
-      .then(result => {
-        user = result[0];
-        
-        done && done();
-      })
+    done && done();
   });
 });
 
@@ -29,7 +21,7 @@ afterAll((done) => {
 })
 
 describe('storiesList as an active user', () => {
-  it('Should return the users that has stories', async () => {
+  it('Should return list of stories', async () => {
     const res = await req.post('/graphql')
       .send({
         query: `
@@ -38,30 +30,29 @@ describe('storiesList as an active user', () => {
               count
               items {
                 id
-                stories {
-                  count
+                user {
+                  id
                 }
               }
             }
           }
         `,
-        variables: { }
+        variables: { first: 10 },
       })
 
     expect(res.body).toHaveProperty('data.storiesList');
 
     expect(res.body.data.storiesList).not.toBeNull();
-    expect(res.body.data.storiesList.count).toBe(3);
-    expect(res.body.data.storiesList.items).toHaveLength(3);
+    expect(res.body.data.storiesList.count).toBeGreaterThan(0);
 
     const { items } = res.body.data.storiesList;
 
-    for (const user of items) {
-      expect(user.stories.count).toBeGreaterThan(0);
+    for (const story of items) {
+      expect(story.user.id).not.toBe(user.id);
     }
   })
 
-  it('Should return only the first user', async () => {
+  it('Should return only the first 10 stories', async () => {
     const res = await req.post('/graphql')
       .send({
         query: `
@@ -75,66 +66,14 @@ describe('storiesList as an active user', () => {
           }
         `,
         variables: {
-          first: 1,
+          first: 10,
         }
       })
 
     expect(res.body).toHaveProperty('data.storiesList');
 
     expect(res.body.data.storiesList).not.toBeNull();
-    expect(res.body.data.storiesList.count).toBe(3);
-    expect(res.body.data.storiesList.items).toHaveLength(1);
-  })
-
-  it('Should return user after the first one', async () => {
-    const res = await req.post('/graphql')
-      .send({
-        query: `
-          query ($first: Int, $skip: Int) {
-            storiesList (first: $first, skip: $skip) {
-              count
-              items {
-                id
-              }
-            }
-          }
-        `,
-        variables: {
-          first: 1,
-          skip: 1,
-        }
-      })
-
-    expect(res.body).toHaveProperty('data.storiesList');
-
-    expect(res.body.data.storiesList).not.toBeNull();
-    expect(res.body.data.storiesList.count).toBe(3);
-    expect(res.body.data.storiesList.items).toHaveLength(1);
-  })
-
-  it('Should return only the last user', async () => {
-    const res = await req.post('/graphql')
-      .send({
-        query: `
-          query ($first: Int, $skip: Int) {
-            storiesList (first: $first, skip: $skip) {
-              count
-              items {
-                id
-              }
-            }
-          }
-        `,
-        variables: {
-          skip: 2,
-        }
-      })
-
-    expect(res.body).toHaveProperty('data.storiesList');
-
-    expect(res.body.data.storiesList).not.toBeNull();
-    expect(res.body.data.storiesList.count).toBe(3);
-    expect(res.body.data.storiesList.items).toHaveLength(1);
+    expect(res.body.data.storiesList.items).toHaveLength(10);
   })
 })
 
