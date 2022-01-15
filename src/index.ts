@@ -28,7 +28,7 @@ app.use('/graphql', graphqlHTTP((_, res) => {
       knex,
       user: locals.user
     },
-    graphiql: process.env.NODE_ENV === 'development'
+    graphiql: process.env.NODE_ENV === 'development',
   }
 }))
 
