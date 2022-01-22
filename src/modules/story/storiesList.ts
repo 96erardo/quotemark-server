@@ -45,6 +45,7 @@ export const storiesList: GraphQLFieldConfig<{}, Context> = {
       query.whereNot('user_id', user.id);
       query.where('created_at', '>', moment().subtract(1, 'day').toISOString());
       query.whereNull('deleted_at');
+      query.orderBy('created_at', 'desc');
 
       if (filter) { createFilter(query, filter) }
 
