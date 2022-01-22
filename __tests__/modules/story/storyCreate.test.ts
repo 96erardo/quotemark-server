@@ -1,12 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { Server } from 'http';
+import { user } from '../../shared/data';
 import knex from '../../shared/knex';
 import app from '../../../src/index';
 
 let server: Server;
 let req: request.SuperAgentTest;
-let user: { id: string };
 let quotes: Array<{ id: string, link: string, content: string }>;
 let stories: Array<string> = [];
 
@@ -14,19 +14,11 @@ beforeAll((done) => {
   server = app.listen(4000, () => {
     req = request.agent(server);
 
-    knex('user')
+    knex('quote')
       .select('*')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
-      .limit(1)
+      .where('user_id', user.id)
+      .limit(5)
       .then(result => {
-        user = result[0];
-        
-        return knex('quote')
-          .select('*')
-          .where('user_id', user.id)
-          .limit(5)
-      })
-      .then((result) => {
         quotes = result;
 
         done && done();
@@ -53,6 +45,7 @@ describe('storyCreate as an active user', () => {
             storyCreate (quote: $quote) {
               id
               color
+              typography
               content
               link
               user {
@@ -74,6 +67,7 @@ describe('storyCreate as an active user', () => {
 
     expect(res.body.data.storyCreate).not.toBeNull();
     expect(res.body.data.storyCreate).toHaveProperty('color', '#e10098');
+    expect(res.body.data.storyCreate).toHaveProperty('typography', 'Arial');
     expect(res.body.data.storyCreate).toHaveProperty('content', quotes[0].content);
     expect(res.body.data.storyCreate).toHaveProperty('link', quotes[0].link);
     expect(res.body.data.storyCreate).toHaveProperty('user.id', user.id);
@@ -83,10 +77,11 @@ describe('storyCreate as an active user', () => {
     res = await req.post('/graphql')
       .send({
         query: `
-          mutation ($quote: StoryQuoteRelationInput!, $color: String) {
-            storyCreate (quote: $quote, color: $color) {
+          mutation ($quote: StoryQuoteRelationInput!, $color: String, $typography: Typography) {
+            storyCreate (quote: $quote, color: $color, typography: $typography) {
               id
               color
+              typography
               content
               link
               user {
@@ -101,7 +96,8 @@ describe('storyCreate as an active user', () => {
               id: quotes[1].id
             }
           },
-          color: '#fff'
+          color: '#fff',
+          typography: 'Barlow'
         }
       });
 
@@ -109,6 +105,7 @@ describe('storyCreate as an active user', () => {
 
     expect(res.body.data.storyCreate).not.toBeNull();
     expect(res.body.data.storyCreate).toHaveProperty('color', '#fff');
+    expect(res.body.data.storyCreate).toHaveProperty('typography', 'Barlow');
     expect(res.body.data.storyCreate).toHaveProperty('content', quotes[1].content);
     expect(res.body.data.storyCreate).toHaveProperty('link', quotes[1].link);
     expect(res.body.data.storyCreate).toHaveProperty('user.id', user.id);
@@ -118,10 +115,11 @@ describe('storyCreate as an active user', () => {
     res = await req.post('/graphql')
       .send({
         query: `
-          mutation ($quote: StoryQuoteRelationInput!, $color: String) {
-            storyCreate (quote: $quote, color: $color) {
+          mutation ($quote: StoryQuoteRelationInput!, $color: String, $typography: Typography) {
+            storyCreate (quote: $quote, color: $color, typography: $typography) {
               id
               color
+              typography
               content
               link
               user {
@@ -136,7 +134,8 @@ describe('storyCreate as an active user', () => {
               id: quotes[2].id
             }
           },
-          color: '#000'
+          color: '#000',
+          typography: 'Poppins'
         }
       });
 
@@ -144,6 +143,7 @@ describe('storyCreate as an active user', () => {
 
     expect(res.body.data.storyCreate).not.toBeNull();
     expect(res.body.data.storyCreate).toHaveProperty('color', '#000');
+    expect(res.body.data.storyCreate).toHaveProperty('typography', 'Poppins');
     expect(res.body.data.storyCreate).toHaveProperty('content', quotes[2].content);
     expect(res.body.data.storyCreate).toHaveProperty('link', quotes[2].link);
     expect(res.body.data.storyCreate).toHaveProperty('user.id', user.id);
@@ -203,6 +203,40 @@ describe('storyCreate as an active user', () => {
     const [{ message }] = res.body.errors;
     
     expect(message).toMatch(/The quote you are trying to link does not exist/);
+  })
+
+  it('Should fail when given a bad typography', async () => {
+    let res = await req.post('/graphql')
+      .send({
+        query: `
+          mutation ($quote: StoryQuoteRelationInput!, $typography: Typography) {
+            storyCreate (quote: $quote, typography: $typography) {
+              id
+              color
+              typography
+              content
+              link
+              user {
+                id
+              }
+            }
+          }
+        `,
+        variables: {
+          quote: {
+            connect: {
+              id: quotes[0].id
+            }
+          },
+          typography: 'wrong value for typography',
+        }
+      });
+
+    expect(res.body).toHaveProperty(['errors', '0', 'message']);
+
+    const [{ message }] = res.body.errors;
+    
+    expect(message).toMatch(/Variable "\$typography" got invalid value/);
   })
 })
 

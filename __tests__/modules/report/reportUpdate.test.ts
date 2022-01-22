@@ -1,26 +1,19 @@
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { Server } from 'http';
+import { user } from '../../shared/data';
 import knex from '../../shared/knex';
 import app from '../../../src/index';
-import faker from 'faker';
 
 let server: Server;
 let req: request.SuperAgentTest;
-let user: { id: string };
-let stories: Array<string> = [];
 let reports: Array<Record<string, any>>;
 
 beforeAll((done) => {
   server = app.listen(4000, () => {
     req = request.agent(server);
 
-    knex('user')
-      .select('*')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
-      .limit(1)
-      .then(result => user = result[0])
-      .finally(() => done && done());
+    done && done();
   });
 });
 
@@ -32,8 +25,6 @@ describe('reportUpdate as an active user', () => {
 
   it('Should be able to approve a report', async () => {
     reports = await knex('report').select('*').where('status', 'pending').whereNull('deleted_at').limit(1);
-
-    console.log('reports', reports);
 
     const res = await req.post('/graphql')
       .send({
