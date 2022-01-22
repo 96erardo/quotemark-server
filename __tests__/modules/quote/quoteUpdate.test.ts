@@ -1,13 +1,13 @@
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { Server } from 'http';
+import { user } from '../../shared/data';
 import knex from '../../shared/knex';
 import app from '../../../src/index';
 import faker  from 'faker';
 
 let server: Server;
 let req: request.SuperAgentTest;
-let user: { id: string };
 let ownedQuote: { id: string };
 let otherQuote: { id: string };
 
@@ -15,18 +15,10 @@ beforeAll((done) => {
   server = app.listen(4000, () => {
     req = request.agent(server);
 
-    knex('user')
+    knex('quote')
       .select('*')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
+      .where('user_id', user.id)
       .limit(1)
-      .then(result => {
-        user = result[0];
-
-        return knex('quote')
-          .select('*')
-          .where('user_id', user.id)
-          .limit(1)
-      })
       .then((result) => {
         ownedQuote = result[0];
 

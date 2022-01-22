@@ -2,43 +2,37 @@ import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { Server } from 'http';
 import knex from '../../shared/knex';
+import { user } from '../../shared/data';
 import app from '../../../src/index';
 import faker  from 'faker';
 import { v4 as uuid } from 'uuid';
 
 let server: Server;
 let req: request.SuperAgentTest;
-let user: { id: string };
 let id: string = '';
 
 beforeAll((done) => {
   server = app.listen(4000, () => {
     req = request.agent(server);
 
-    knex('user')
-      .select('*')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
-      .limit(1)
-      .then(result => {
-        user = result[0];
+    id = uuid();
 
-        id = uuid();
-
-        return knex('quote')
-          .insert({
-            id,
-            name: faker.name.title(),
-            content: faker.lorem.sentence(),
-            link: faker.internet.url(),
-            user_id: user.id,
-          })
+    knex('quote')
+      .insert({
+        id,
+        name: faker.name.title(),
+        content: faker.lorem.sentence(),
+        link: faker.internet.url(),
+        user_id: user.id,
       })
-      .then(() => done && done());
+      .then(() => done && done())
   });
 });
 
 afterAll((done) => {
-  knex('quote').where('id', id).del()
+  knex('quote')
+    .where('id', id)
+    .del()
     .then(() =>  server.close(() => done && done()))
 })
 

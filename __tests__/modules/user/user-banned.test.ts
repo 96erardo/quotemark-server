@@ -1,4 +1,5 @@
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
+import { user } from '../../shared/data';
 import request from 'supertest';
 import { Server } from 'http';
 import knex from '../../shared/knex';
@@ -6,26 +7,17 @@ import app from '../../../src/index';
 
 let server: Server;
 let req: request.SuperAgentTest;
-let user: { id: string };
 
 beforeAll((done) => {
   server = app.listen(4000, () => {
     req = request.agent(server);
-    
+
     /**
      * Setting authenticated user as banned
-     * and fetching him
      */
     knex('user')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
+      .where('id', user.id)
       .update({ status: 'banned' })
-      .then(() => 
-        knex('user')
-          .select('*')
-          .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
-          .limit(1)
-      )
-      .then(result => user = result[0])
       .then(() => done && done());  
   });
 });
@@ -37,7 +29,7 @@ afterAll((done) => {
      * an active
      */
     knex('user')
-      .where('email', process.env.GOOGLE_AUTH_USER_EMAIL)
+      .where('id', user.id)
       .update({ status: 'active' })
       .then(() => done && done())
   });

@@ -7,9 +7,9 @@ export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
     await knex('story').del();
 
-    const quotes = await knex('quote').select('*').limit(60).orderBy('user_id');
+    const quotes = await knex('quote').select('*').limit(80).orderBy('user_id');
     
-    const stories = quotes.map(quote => ({
+    let stories = quotes.map(quote => ({
       id: uuid(),
       color: faker.internet.color(),
       content: quote.content,

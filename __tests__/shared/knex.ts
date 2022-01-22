@@ -3,7 +3,7 @@ import { convertToCamel } from './utils';
 
 export default knex({
   client: process.env.DB_CLIENT,
-  debug: true,
+  debug: false,
   connection: {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
