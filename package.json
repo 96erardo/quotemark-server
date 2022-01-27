@@ -12,7 +12,7 @@
     "eslint": "eslint --fix \"src/**\"",
     "knex:init": "knex init -x ts",
     "seed": "knex seed:run",
-    "migrate:latest": "knex migrate:latest",
+    "migrate:latest": "knex migrate:latest --debug",
     "migrate:rollback": "knex migrate:down",
     "migrate:reset": "knex migrate:rollback --all && knex migrate:latest && npm run seed"
   },

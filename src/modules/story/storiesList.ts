@@ -8,7 +8,8 @@ import {
 import { 
   List, 
   IDPredicate, 
-  StringPredicate, 
+  StringPredicate,
+  DateTimePredicate,
 } from '../../shared/graphql-types';
 import { Context } from '../../shared/types'
 import { combine, createFilter } from '../../shared/utils'
@@ -25,6 +26,7 @@ const StoryFilter: GraphQLInputObjectType = new GraphQLInputObjectType({
     name: { type: StringPredicate },
     content: { type: StringPredicate },
     link: { type: StringPredicate },
+    createdAt: { type: DateTimePredicate },
     OR: { type: new GraphQLList(new GraphQLNonNull(StoryFilter)) },
     AND: { type: new GraphQLList(new GraphQLNonNull(StoryFilter)) }
   })
