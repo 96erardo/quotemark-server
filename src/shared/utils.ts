@@ -75,10 +75,10 @@ export function createFilter<T> (query: QueryBuilder, filter: Filter<T>): void {
             query.where(attr, '<=', filter[field].lte || '')
             break
           case 'gt':
-            query.where(attr, '>', filter[field].lte || '')
+            query.where(attr, '>', filter[field].gt || '')
             break
           case 'gte':
-            query.where(attr, '>=', filter[field].lte || '')
+            query.where(attr, '>=', filter[field].gte || '')
             break
           case 'not_in':
             query.whereNotIn(attr, filter[field].not_in || [])
