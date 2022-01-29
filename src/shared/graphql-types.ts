@@ -40,7 +40,7 @@ export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
           type: GraphQLNonNull(new GraphQLList(GraphQLNonNull(type))),
           resolve: async ({ query }) => {
             try {
-              return await query.clone().select('*')
+              return await query.clone()
               
             } catch (e) {
               throw new ServerError(e.message);
