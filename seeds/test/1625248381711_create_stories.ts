@@ -19,15 +19,13 @@ export async function seed(knex: Knex): Promise<void> {
       created_at: faker.datatype.boolean() ? (
         moment()
           .subtract(2, 'day')
-          .toISOString()
-          .replace('T', ' ')
-          .replace('Z', '')
+          .format('YYYY-MM-DD HH:mm:ss.SSS')
       ) : (
         moment()
-          .subtract(4, 'hours')
-          .toISOString()
-          .replace('T', ' ')
-          .replace('Z', '')
+          .subtract(Math.random() * 12, 'hours')
+          .subtract(Math.random() * 40, 'minutes')
+          .subtract(Math.random() * 30, 'seconds')
+          .format('YYYY-MM-DD HH:mm:ss.SSS')
       )
     }));
 
