@@ -5,6 +5,7 @@ import {
   GraphQLInputObjectType,
   GraphQLEnumType,
   GraphQLNonNull,
+  GraphQLBoolean,
 } from 'graphql'
 import { GraphQLDateTime } from '../../shared/graphql-types'
 import knex from '../../shared/configuration/knex';
@@ -27,6 +28,16 @@ export const Story = new GraphQLObjectType({
 
         return user;
       }
+    },
+    seen: {
+      type: GraphQLNonNull(GraphQLBoolean),
+      resolve: (data, _, context) => {
+        if (!data.seen) {
+          return false;
+        }
+
+        return true;
+      } 
     },
     createdAt: { type: GraphQLNonNull(GraphQLDateTime) },
     updatedAt: { type: GraphQLNonNull(GraphQLDateTime) },
@@ -58,6 +69,7 @@ export type StoryType = {
   typography: string,
   content: string,
   link: string,
+  seen: boolean,
   createdAt: string,
   updatedAt: string,
   deletedAt: string,

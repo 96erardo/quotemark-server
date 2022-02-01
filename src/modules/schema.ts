@@ -17,7 +17,8 @@ import {
   storiesList,
   storyCreate,
   storyDelete,
-  myStoriesList
+  myStoriesList,
+  markAsSeen,
 } from './story'
 import {
   reportCreate,
@@ -50,7 +51,8 @@ export default new GraphQLSchema({
       storyCreate,
       storyDelete,
       reportCreate,
-      reportUpdate
+      reportUpdate,
+      markAsSeen,
     }
   })
 })
