@@ -1,5 +1,4 @@
 import {
-  GraphQLInputObjectType,
   GraphQLList,
   GraphQLNonNull,
   GraphQLID,
@@ -7,13 +6,12 @@ import {
   GraphQLFieldConfig,
   GraphQLObjectType,
 } from 'graphql'
-import { IDPredicate, StringPredicate, List } from '../../shared/graphql-types'
-import { User, UserType } from '../user/types'
-import { createFilter, combine } from '../../shared/utils'
-import { Context, ListArguments, ServerError } from '../../shared/types'
+import { User } from '../user/types'
+import { combine } from '../../shared/utils'
+import { Context, ServerError } from '../../shared/types'
 import { isActive } from '../../shared/middlewares/isActive'
+import { isMyStory } from '../../shared/middlewares/isMyStory'
 import { QueryBuilder } from 'knex'
-import moment from 'moment'
 
 export const StoryViewsResponse = new GraphQLObjectType<{ query: QueryBuilder }, Context>({
   name: 'StoryViewsResponse',
@@ -63,6 +61,7 @@ export const viewsList: GraphQLFieldConfig<{}, Context> = {
   },
   resolve: combine(
     isActive,
+    isMyStory,
     async (_, { id, first, skip }, { knex }) => {
       const query = knex('user_views_story')
 

@@ -25,6 +25,7 @@ describe('markAsSeen as an active user', () => {
   it('Should mark story as seen', async () => {
     const [story] = await knex('story')
       .where('created_at', '>', moment().startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS'))
+      .whereNot('user_id', user.id)
 
     const res = await req.post('/graphql')
       .send({
