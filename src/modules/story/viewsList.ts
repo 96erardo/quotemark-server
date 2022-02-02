@@ -35,7 +35,7 @@ export const StoryViewsResponse = new GraphQLObjectType<{ query: QueryBuilder },
       }
     },
     items: {
-      type: GraphQLNonNull(new GraphQLList(User)),
+      type: GraphQLNonNull(new GraphQLList(GraphQLNonNull(User))),
       resolve: async ({ query }) => {
         try {
           return await query
