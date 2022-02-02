@@ -7,6 +7,7 @@ export enum ErrorCodes {
   Authentication,
   NonActive,
   NonAdmin,
+  NonOwner,
 }
 
 export class ServerError extends GraphQLError {
