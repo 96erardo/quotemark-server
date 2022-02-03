@@ -5,7 +5,7 @@ import { isActive } from '../../shared/middlewares/isActive'
 import { combine } from '../../shared/utils'
 
 export const storyDelete: GraphQLFieldConfig<{}, Context> = {
-  type: DeleteResult,
+  type: GraphQLNonNull(DeleteResult),
   args: {
     id: { type: new GraphQLNonNull(GraphQLID) }
   },
