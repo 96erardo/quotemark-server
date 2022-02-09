@@ -11,6 +11,7 @@ import {
 } from 'graphql'
 import { QueryBuilder } from 'knex'
 import { Context, ServerError } from './types'
+import moment from 'moment';
 
 export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
   constructor (name: string, type: GraphQLObjectType) {
@@ -39,7 +40,7 @@ export class List extends GraphQLObjectType<{ query: QueryBuilder }, Context> {
           type: GraphQLNonNull(new GraphQLList(GraphQLNonNull(type))),
           resolve: async ({ query }) => {
             try {
-              return await query.clone().select('*')
+              return await query.clone()
               
             } catch (e) {
               throw new ServerError(e.message);
@@ -101,7 +102,7 @@ export const GraphQLDateTime = new GraphQLScalarType({
       throw new Error('Date time should have ISO 8601 format')
     }
 
-    return date.replace('T', ' ').replace('Z', '')
+    return moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
   },
   description: 'A DateTime string in ISO 8601 format'
 })
@@ -173,10 +174,10 @@ export const DateTimePredicate = new GraphQLInputObjectType({
     not_equals: { type: GraphQLDateTime },
     in: { type: new GraphQLList(new GraphQLNonNull(GraphQLDateTime)) },
     not_in: { type: new GraphQLList(new GraphQLNonNull(GraphQLDateTime)) },
-    lt: { type: GraphQLDate },
-    lte: { type: GraphQLDate },
-    gt: { type: GraphQLDate },
-    gte: { type: GraphQLDate },
+    lt: { type: GraphQLDateTime },
+    lte: { type: GraphQLDateTime },
+    gt: { type: GraphQLDateTime },
+    gte: { type: GraphQLDateTime },
     is_empty: { type: GraphQLBoolean },
     is_not_empty: { type: GraphQLBoolean }
   }

@@ -17,7 +17,9 @@ import {
   storiesList,
   storyCreate,
   storyDelete,
-  myStoriesList
+  myStoriesList,
+  markAsSeen,
+  viewsList,
 } from './story'
 import {
   reportCreate,
@@ -34,7 +36,8 @@ export default new GraphQLSchema({
       quotesList,
       storiesList,
       myStoriesList,
-      reportsList
+      reportsList,
+      viewsList
     }
   }),
   mutation: new GraphQLObjectType({
@@ -50,7 +53,8 @@ export default new GraphQLSchema({
       storyCreate,
       storyDelete,
       reportCreate,
-      reportUpdate
+      reportUpdate,
+      markAsSeen,
     }
   })
 })

@@ -56,7 +56,7 @@ describe('myStoriesList as an active user', () => {
       expect(story.deletedAt).toBe(null);
       expect(
         moment(story.createdAt).isAfter(aDayAgo)
-      )
+      ).toBeTruthy()
     }
   })
 
